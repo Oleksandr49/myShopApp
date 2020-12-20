@@ -1,7 +1,7 @@
 package com.example.firstproject.config;
 
 import com.example.firstproject.service.jwt.JwtService;
-import com.example.firstproject.service.jwt.MyUserDetailsService;
+import com.example.firstproject.service.user.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,19 +1,14 @@
 package com.example.firstproject.service.jwt;
 
 
-import com.example.firstproject.model.jwt.JwtSecret;
-import com.example.firstproject.model.users.User;
-import com.example.firstproject.model.users.myUserDetails;
 import com.example.firstproject.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +16,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final byte[] SECRET_KEY = JwtSecret.getEncryptedSecret();
+    private final byte[] SECRET_KEY = JwtUtil.getEncryptedSecret();
 
     @Autowired
     JwtService jwtService;
