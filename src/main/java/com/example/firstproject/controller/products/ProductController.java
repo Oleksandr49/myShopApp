@@ -1,8 +1,9 @@
 package com.example.firstproject.controller.products;
 
-import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.product.Product;
 import com.example.firstproject.model.product.ProductEntityModelAssembler;
+import com.example.firstproject.service.customer.CustomerService;
+import com.example.firstproject.service.customer.cart.CartService;
 import com.example.firstproject.service.jwt.JwtUtil;
 import com.example.firstproject.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class ProductController {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    CustomerService customerService;
+
+    @Autowired
+    CartService cartService;
 
     @Autowired
     ProductEntityModelAssembler productEntityModelAssembler;
@@ -71,15 +78,13 @@ public class ProductController {
 
     @PutMapping(value = "/products/cart/{productId}")
     public ResponseEntity<?> addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
-        CartItem cartItem = productService.addToCart(jwtUtil.getIdFromAuthHeader(header), productId);
-        return new ResponseEntity<>(cartItem, HttpStatus.OK);
+        customerService.addItemToCart(jwtUtil.getIdFromAuthHeader(header), productId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/products/cart/{itemId}")
-    public ResponseEntity<?> removeFromCart(@RequestHeader(name = headerName) String header, @PathVariable Long itemId) {
-        Boolean result = productService.removeFromCart(jwtUtil.getIdFromAuthHeader(header), itemId);
-        return (result)
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    public ResponseEntity<?> removeFromCart(@PathVariable Long itemId) {
+        cartService.removeItemFromCart(itemId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

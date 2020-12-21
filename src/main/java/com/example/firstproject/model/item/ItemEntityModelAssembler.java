@@ -13,7 +13,7 @@ public class ItemEntityModelAssembler implements RepresentationModelAssembler<It
     @Override
     public EntityModel<Item> toModel(Item item) {
         return EntityModel.of(item, //
-                WebMvcLinkBuilder.linkTo(methodOn(ProductController.class).removeFromCart("", item.getId())).withSelfRel());
+                WebMvcLinkBuilder.linkTo(methodOn(ProductController.class).removeFromCart(item.getId())).withSelfRel());
 
     }
 }
