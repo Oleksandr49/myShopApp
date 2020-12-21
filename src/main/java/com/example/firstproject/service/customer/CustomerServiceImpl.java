@@ -99,5 +99,12 @@ public class CustomerServiceImpl implements CustomerService{
     public void addItemToCart(Long customerId, Long productId) {
         Customer customer = customerRepository.getOne(customerId);
         cartService.addItemToCart(customer, productId);
+        recalculateCart(customerId);
+    }
+
+    private void recalculateCart(Long customerId){
+        Customer customer = customerRepository.getOne(customerId);
+        cartService.calculateCart(customer);
+        customerRepository.save(customer);
     }
 }

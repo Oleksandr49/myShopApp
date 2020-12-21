@@ -43,13 +43,20 @@ public class CartServiceImpl implements CartService{
         CartItem cartItem = (CartItem) item;
         cartItem.setShoppingCart(customer.getShoppingCart());
         itemService.saveItem(cartItem);
-        //calculate new totalCost of Cart
     }
 
     @Override
-    public void removeItemFromCart(Long itemId) {
-        itemService.delete(itemId);
-        //calculate new totalCost of Cart
+    public void calculateCart(Customer customer){
+        ShoppingCart shoppingCart = customer.getShoppingCart();
+        shoppingCart.setTotalCost(calculateItems(shoppingCart));
+    }
+
+    private Double calculateItems(ShoppingCart shoppingCart){
+        Double totalCost = 0.00;
+        for(Item item : shoppingCart.getCartItems()){
+            totalCost += item.getCost();
+        }
+        return totalCost;
     }
 
 }

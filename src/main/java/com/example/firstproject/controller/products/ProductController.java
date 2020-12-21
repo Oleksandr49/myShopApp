@@ -81,10 +81,4 @@ public class ProductController {
         customerService.addItemToCart(jwtUtil.getIdFromAuthHeader(header), productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @DeleteMapping(value = "/products/cart/{itemId}")
-    public ResponseEntity<?> removeFromCart(@PathVariable Long itemId) {
-        cartService.removeItemFromCart(itemId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

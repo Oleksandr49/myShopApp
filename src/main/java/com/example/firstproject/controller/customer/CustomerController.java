@@ -1,6 +1,5 @@
 package com.example.firstproject.controller.customer;
 
-import com.example.firstproject.model.item.ItemEntityModelAssembler;
 import com.example.firstproject.model.order.CustomerOrder;
 import com.example.firstproject.model.user.customer.*;
 import com.example.firstproject.service.customer.CustomerService;
@@ -20,12 +19,6 @@ public class CustomerController {
 
     @Autowired
     DetailsEntityModelAssembler detailsEntityModelAssembler;
-
-    @Autowired
-    ItemEntityModelAssembler itemEntityModelAssembler;
-
-    @Autowired
-    OrderPositionEntityModelAssembler orderPositionEntityModelAssembler;
 
     @Autowired
     JwtUtil jwtUtil;

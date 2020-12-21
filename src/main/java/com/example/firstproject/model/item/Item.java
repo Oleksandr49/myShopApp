@@ -15,6 +15,7 @@ public class Item {
     private Long id;
     private Long productId;
     private Integer amount;
+    private Double cost;
 
     public Long getProductId() {
         return productId;
@@ -39,5 +40,13 @@ public class Item {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
     }
 }

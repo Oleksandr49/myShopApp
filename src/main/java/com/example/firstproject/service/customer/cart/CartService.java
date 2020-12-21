@@ -10,5 +10,5 @@ public interface CartService {
     void clearCart(Customer customer);
     CustomerOrder cartToOrder(Customer customer);
     void addItemToCart(Customer customer, Long productId);
-    void removeItemFromCart(Long itemId);
+    public void calculateCart(Customer customer);
 }
