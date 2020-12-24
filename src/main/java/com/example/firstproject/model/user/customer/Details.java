@@ -2,6 +2,7 @@ package com.example.firstproject.model.user.customer;
 
 
 import com.example.firstproject.model.order.CustomerOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 public class Details {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String firstName;
     private String secondName;
@@ -63,5 +64,14 @@ public class Details {
 
     public List<CustomerOrder> getOrderHistory() {
         return orderHistory;
+    }
+
+    @JsonIgnore
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

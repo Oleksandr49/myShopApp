@@ -6,21 +6,23 @@ import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.Details;
 import com.example.firstproject.model.user.customer.ShoppingCart;
 
+import java.util.List;
+
 public interface CustomerService {
 
     void create (Customer customer);
 
     Details readDetails(Long id);
     void updateDetails(Details details, Long id);
-    void deleteDetails(Long id);
 
-    void createAddress(Address address, Long id);
     Address readAddress (Long id);
     void updateAddress (Address address, Long id);
-    void deleteAddress (Long id);
 
     ShoppingCart readCart(Long id);
-    void clearCart(Long id);
-    CustomerOrder orderCart(Long id);
+    CustomerOrder CartToOrder(Long id);
     void addItemToCart(Long id, Long productId);
+    void removeItemFromCart(Long id, Long productId);
+
+    List<CustomerOrder> getOrderHistory(Long id);
+    CustomerOrder readOrder(Long id, Long orderId);
 }

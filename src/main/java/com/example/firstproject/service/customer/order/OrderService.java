@@ -5,4 +5,5 @@ import com.example.firstproject.model.user.customer.Customer;
 
 public interface OrderService {
     CustomerOrder assembleOrder(Customer customer);
+    CustomerOrder readOrder(Customer customer, Long orderId);
 }

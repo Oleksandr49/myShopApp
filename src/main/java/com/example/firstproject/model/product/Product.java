@@ -1,5 +1,7 @@
 package com.example.firstproject.model.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class Product {
     @Column(name = "product_price")
     private Double productPrice;
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

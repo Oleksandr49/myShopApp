@@ -1,16 +1,18 @@
 package com.example.firstproject.service.product;
 
 import com.example.firstproject.model.product.Product;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 
-import java.util.List;
+public interface ProductService extends RepresentationModelAssembler<Product, EntityModel<Product>> {
 
-public interface ProductService {
-
-     List<Product> readAllProducts();
-     void create (Product product);
-     Product read (Long id);
+     CollectionModel<EntityModel<Product>> readAllProducts();
+     EntityModel<Product> create (Product product);
+     Product getProduct(Long id);
+     EntityModel<Product> read (Long id);
      Boolean delete (Long id);
-     Product update (Product product, Long id);
+     EntityModel<Product> update (Product product, Long id);
 
-
+     EntityModel<Product> toModel(Product entity);
 }

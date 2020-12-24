@@ -2,56 +2,55 @@ package com.example.firstproject.service.customer.cart;
 
 import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.item.Item;
-import com.example.firstproject.model.order.CustomerOrder;
-import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.ShoppingCart;
-import com.example.firstproject.service.customer.order.OrderService;
+import com.example.firstproject.repository.CartRepository;
 import com.example.firstproject.service.product.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartServiceImpl implements CartService{
+
     @Autowired
-    OrderService orderService;
+    CartRepository cartRepository;
 
     @Autowired
     ItemService itemService;
 
     @Override
-    public ShoppingCart readShoppingCart(Customer customer) {
-        return customer.getShoppingCart();
+    public void clearCart(ShoppingCart shoppingCart) {
+        deleteCartItems(shoppingCart.getCartItems());
+        updateCartTotal(shoppingCart);
     }
 
     @Override
-    public void clearCart(Customer customer) {
-        itemService.clearCart(customer.getShoppingCart());
-        customer.getShoppingCart().getCartItems().clear();
-        customer.getShoppingCart().setTotalCost(0.00);
-    }
-
-    @Override
-    public CustomerOrder cartToOrder(Customer customer) {
-       CustomerOrder customerOrder = orderService.assembleOrder(customer);
-       clearCart(customer);
-       return customerOrder;
-    }
-
-    @Override
-    public void addItemToCart(Customer customer, Long productId) {
-        Item item = itemService.createCartItem(productId);
-        CartItem cartItem = (CartItem) item;
-        cartItem.setShoppingCart(customer.getShoppingCart());
+    public void addItemToCart(ShoppingCart shoppingCart, Long productId) {
+        CartItem cartItem = (CartItem)itemService.createCartItem(productId);
+        cartItem.setShoppingCart(shoppingCart);
         itemService.saveItem(cartItem);
+        updateCartTotal(shoppingCart);
     }
 
     @Override
-    public void calculateCart(Customer customer){
-        ShoppingCart shoppingCart = customer.getShoppingCart();
-        shoppingCart.setTotalCost(calculateItems(shoppingCart));
+    public void removeItemFromCart(ShoppingCart shoppingCart, Long itemId) {
+        itemService.delete(itemId);
+        updateCartTotal(shoppingCart);
     }
 
-    private Double calculateItems(ShoppingCart shoppingCart){
+    private void updateCartTotal(ShoppingCart shoppingCart){
+        shoppingCart.setTotalCost(calculateCartItems(shoppingCart));
+        cartRepository.save(shoppingCart);
+    }
+
+    private void deleteCartItems(List<CartItem> cartItems){
+        for (CartItem cartItem : cartItems){
+            itemService.delete(cartItem.getId());
+        }
+    }
+
+    private Double calculateCartItems(ShoppingCart shoppingCart){
         Double totalCost = 0.00;
         for(Item item : shoppingCart.getCartItems()){
             totalCost += item.getCost();

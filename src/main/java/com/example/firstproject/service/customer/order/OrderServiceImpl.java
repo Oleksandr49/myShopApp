@@ -6,13 +6,13 @@ import com.example.firstproject.model.order.CustomerOrder;
 import com.example.firstproject.model.order.OrderState;
 import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.ShoppingCart;
-import com.example.firstproject.repository.ItemRepository;
 import com.example.firstproject.repository.OrderRepository;
-import com.example.firstproject.service.customer.details.DetailsService;
+import com.example.firstproject.service.product.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -21,19 +21,22 @@ public class OrderServiceImpl implements OrderService{
     OrderRepository orderRepository;
 
     @Autowired
-    ItemRepository itemRepository;
-
-    @Autowired
-    DetailsService detailsService;
+    ItemService itemService;
 
     @Override
     public CustomerOrder assembleOrder(Customer customer) {
         CustomerOrder customerOrder = createOrder();
         customerOrder.setTotalCost(customer.getShoppingCart().getTotalCost());
-        customerOrder.setDetails(detailsService.readDetails(customer));
+        customerOrder.setDetails(customer.getDetails());
         orderRepository.save(customerOrder);
         transferItems(customer.getShoppingCart(), customerOrder);
         return customerOrder;
+    }
+
+    @Override
+    public CustomerOrder readOrder(Customer customer, Long orderId) {
+            List<CustomerOrder> orderHistory = customer.getDetails().getOrderHistory();
+            return findOrder(orderHistory, orderId);
     }
 
     private CustomerOrder createOrder(){
@@ -41,6 +44,15 @@ public class OrderServiceImpl implements OrderService{
         customerOrder.setCreated(LocalDateTime.now());
         customerOrder.setOrderState(OrderState.STATE);
         return customerOrder;
+    }
+
+    private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){
+        for(CustomerOrder order : orderHistory){
+            if(order.getId().equals(orderId)){
+                return order;
+            }
+        }
+        return null;
     }
 
     private void transferItems(ShoppingCart shoppingCart, CustomerOrder customerOrder){
@@ -52,7 +64,7 @@ public class OrderServiceImpl implements OrderService{
             orderItem.setId(cartItem.getId());
             orderItem.setCost(cartItem.getCost());
             customerOrder.getOrderItems().add(orderItem);
-            itemRepository.save(orderItem);
+            itemService.saveItem(orderItem);
         }
     }
 }
