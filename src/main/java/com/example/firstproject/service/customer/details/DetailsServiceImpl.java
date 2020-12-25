@@ -41,7 +41,7 @@ public class DetailsServiceImpl implements DetailsService {
     @Override
     public EntityModel<Details> toModel(Details entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(CustomerController.class).read("")).withSelfRel(),
+                linkTo(methodOn(CustomerController.class).readDetails("")).withSelfRel(),
                 linkTo(methodOn(CustomerController.class).readAddress("")).withRel("Address"),
                 linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"));
     }

@@ -2,7 +2,6 @@ package com.example.firstproject.controller.user;
 
 import com.example.firstproject.model.user.User;
 import com.example.firstproject.model.user.UserEntityModelAssembler;
-import com.example.firstproject.service.jwt.JwtService;
 import com.example.firstproject.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
-
-    @Autowired
-    JwtService jwtService;
 
     @Autowired
     UserService userService;

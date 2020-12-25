@@ -55,11 +55,14 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public EntityModel<CustomerOrder> toModel(CustomerOrder entity) {
+
         return EntityModel.of(entity,
                 linkTo(methodOn(CustomerController.class).readOrder("", entity.getId())).withSelfRel(),
                 linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"),
                 linkTo(methodOn(PayPallController.class).makePayment(entity)).withRel("Payment"));
     }
+
+
 
     private CollectionModel<EntityModel<CustomerOrder>> toEntityCollection(List <CustomerOrder> orders){
         List<EntityModel<CustomerOrder>> orderHistory = orders.stream().map(this::toModel).collect(Collectors.toList());

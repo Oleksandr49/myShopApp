@@ -32,13 +32,13 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/customers/details")
-    public ResponseEntity<?> read(@RequestHeader(name = headerName)String header) {
+    public ResponseEntity<?> readDetails(@RequestHeader(name = headerName)String header) {
         EntityModel<Details> details = customerService.readDetails(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(details, HttpStatus.OK);
     }
 
     @PutMapping(value = "/customers/details")
-    public ResponseEntity<?> update(@RequestBody Details details, @RequestHeader(name = headerName)String header){
+    public ResponseEntity<?> updateDetails(@RequestBody Details details, @RequestHeader(name = headerName)String header){
         EntityModel<Details> result = customerService.updateDetails(details, jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
