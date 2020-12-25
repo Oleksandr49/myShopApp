@@ -1,5 +1,8 @@
 package com.example.firstproject.service.customer.order;
 
+import com.example.firstproject.controller.customer.CustomerController;
+import com.example.firstproject.controller.paypal.PayPallController;
+import com.example.firstproject.controller.products.ProductController;
 import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.item.OrderItem;
 import com.example.firstproject.model.order.CustomerOrder;
@@ -9,10 +12,16 @@ import com.example.firstproject.model.user.customer.ShoppingCart;
 import com.example.firstproject.repository.OrderRepository;
 import com.example.firstproject.service.product.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -24,19 +33,37 @@ public class OrderServiceImpl implements OrderService{
     ItemService itemService;
 
     @Override
-    public CustomerOrder assembleOrder(Customer customer) {
+    public CollectionModel<EntityModel<CustomerOrder>> getOrderHistory(Customer customer) {
+        return toEntityCollection(customer.getDetails().getOrderHistory());
+    }
+
+    @Override
+    public EntityModel<CustomerOrder> assembleOrder(Customer customer) {
         CustomerOrder customerOrder = createOrder();
         customerOrder.setTotalCost(customer.getShoppingCart().getTotalCost());
         customerOrder.setDetails(customer.getDetails());
         orderRepository.save(customerOrder);
         transferItems(customer.getShoppingCart(), customerOrder);
-        return customerOrder;
+        return toModel(customerOrder);
     }
 
     @Override
-    public CustomerOrder readOrder(Customer customer, Long orderId) {
+    public EntityModel<CustomerOrder> readOrder(Customer customer, Long orderId) {
             List<CustomerOrder> orderHistory = customer.getDetails().getOrderHistory();
-            return findOrder(orderHistory, orderId);
+            return toModel(findOrder(orderHistory, orderId));
+    }
+
+    @Override
+    public EntityModel<CustomerOrder> toModel(CustomerOrder entity) {
+        return EntityModel.of(entity,
+                linkTo(methodOn(CustomerController.class).readOrder("", entity.getId())).withSelfRel(),
+                linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"),
+                linkTo(methodOn(PayPallController.class).makePayment(entity)).withRel("Payment"));
+    }
+
+    private CollectionModel<EntityModel<CustomerOrder>> toEntityCollection(List <CustomerOrder> orders){
+        List<EntityModel<CustomerOrder>> orderHistory = orders.stream().map(this::toModel).collect(Collectors.toList());
+        return CollectionModel.of(orderHistory, linkTo(methodOn(ProductController.class).readAll()).withSelfRel());
     }
 
     private CustomerOrder createOrder(){
@@ -67,4 +94,6 @@ public class OrderServiceImpl implements OrderService{
             itemService.saveItem(orderItem);
         }
     }
+
+
 }

@@ -9,10 +9,8 @@ public interface ProductService extends RepresentationModelAssembler<Product, En
 
      CollectionModel<EntityModel<Product>> readAllProducts();
      EntityModel<Product> create (Product product);
-     Product getProduct(Long id);
      EntityModel<Product> read (Long id);
-     Boolean delete (Long id);
      EntityModel<Product> update (Product product, Long id);
-
-     EntityModel<Product> toModel(Product entity);
+     Product getProduct(Long id);
+     Boolean delete (Long id);
 }

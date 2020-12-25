@@ -62,6 +62,7 @@ public class Details {
         this.address = address;
     }
 
+    @JsonIgnore
     public List<CustomerOrder> getOrderHistory() {
         return orderHistory;
     }

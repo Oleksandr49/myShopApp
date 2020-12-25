@@ -11,15 +11,16 @@ import com.example.firstproject.service.customer.details.DetailsService;
 import com.example.firstproject.service.customer.order.OrderService;
 import com.example.firstproject.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
     @Autowired
     CustomerRepository customerRepository;
+
     @Autowired
     UserService userService;
     @Autowired
@@ -31,67 +32,78 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public void create(Customer customer) {
-            customer.setActive(true);
-            customer.setRoles("ROLE_CUSTOMER");
             userService.create(customer);
     }
 
     @Override
-    public Details readDetails(Long customerId) {
-        return customerRepository.getOne(customerId).getDetails();
+    public EntityModel<Details> readDetails(Long customerId) {
+        Details details = customerRepository.getOne(customerId).getDetails();
+        return detailsService.toModel(details);
     }
 
     @Override
-    public void updateDetails(Details newDetails, Long customerId) {
+    public EntityModel<Details> updateDetails(Details newDetails, Long customerId) {
         Long detailsId = customerRepository.getOne(customerId).getDetails().getId();
-        detailsService.updateDetails(newDetails, detailsId);
+        return detailsService.updateDetails(newDetails, detailsId);
     }
 
     @Override
     public Address readAddress(Long customerId) {
-        return customerRepository.getOne(customerId).getDetails().getAddress();
+        Address address = customerRepository.getOne(customerId).getDetails().getAddress();
+        if(address == null){
+            return new Address();
+        }
+        return address;
     }
 
     @Override
-    public void updateAddress(Address newAddress, Long customerId) {
+    public Address updateAddress(Address newAddress, Long customerId) {
         Long detailsId = customerRepository.getOne(customerId).getDetails().getId();
-        detailsService.updateAddress(newAddress, detailsId);
+        return detailsService.updateAddress(newAddress, detailsId);
     }
 
     @Override
-    public List<CustomerOrder> getOrderHistory(Long customerId) {
-        return customerRepository.getOne(customerId).getDetails().getOrderHistory();
-
+    public CollectionModel<EntityModel<CustomerOrder>> getOrderHistory(Long customerId) {
+        return orderService.getOrderHistory(customerRepository.getOne(customerId));
     }
 
     @Override
-    public CustomerOrder readOrder(Long customerId, Long orderId) {
+    public EntityModel<CustomerOrder> readOrder(Long customerId, Long orderId) {
         return orderService.readOrder(customerRepository.getOne(customerId), orderId);
     }
 
     @Override
-    public ShoppingCart readCart(Long customerId) {
-        return customerRepository.getOne(customerId).getShoppingCart();
+    public EntityModel<ShoppingCart> readCart(Long customerId) {
+        return cartService.toModel(customerRepository.getOne(customerId).getShoppingCart());
     }
 
     @Override
-    public CustomerOrder CartToOrder(Long customerId) {
+    public EntityModel<CustomerOrder> CartToOrder(Long customerId) {
         Customer customer = customerRepository.getOne(customerId);
-        CustomerOrder customerOrder = orderService.assembleOrder(customer);
-        cartService.clearCart(customer.getShoppingCart());
+        EntityModel<CustomerOrder> customerOrder = orderService.assembleOrder(customer);
+        cartService.emptyCart(customer.getShoppingCart());
         return customerOrder;
     }
 
     @Override
-    public void addItemToCart(Long customerId, Long productId) {
-        Customer customer = customerRepository.getOne(customerId);
-        cartService.addItemToCart(customer.getShoppingCart(), productId);
+    public EntityModel<ShoppingCart> emptyCart(Long id) {
+        ShoppingCart shoppingCart = customerRepository.getOne(id).getShoppingCart();
+        cartService.emptyCart(shoppingCart);
+        return cartService.toModel(shoppingCart);
     }
 
     @Override
-    public void removeItemFromCart(Long customerId, Long itemId) {
-        Customer customer = customerRepository.getOne(customerId);
-        cartService.removeItemFromCart(customer.getShoppingCart(), itemId);
+    public EntityModel<ShoppingCart> addItemToCart(Long customerId, Long productId) {
+        ShoppingCart shoppingCart = customerRepository.getOne(customerId).getShoppingCart();
+        cartService.addItemToCart(shoppingCart, productId);
+        return cartService.toModel(shoppingCart);
+    }
+
+    @Override
+    public EntityModel<ShoppingCart> removeItemFromCart(Long customerId, Long itemId) {
+        ShoppingCart shoppingCart = customerRepository.getOne(customerId).getShoppingCart();
+        cartService.removeItemFromCart(shoppingCart, itemId);
+        return cartService.toModel(shoppingCart);
     }
 
 }

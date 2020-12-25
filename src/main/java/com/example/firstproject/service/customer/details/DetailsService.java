@@ -2,10 +2,14 @@ package com.example.firstproject.service.customer.details;
 
 import com.example.firstproject.model.user.customer.Address;
 import com.example.firstproject.model.user.customer.Details;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 
-public interface DetailsService {
+public interface DetailsService extends RepresentationModelAssembler<Details, EntityModel<Details>> {
 
-    void updateDetails(Details newDetails, Long detailsId);
+    EntityModel<Details> updateDetails(Details newDetails, Long detailsId);
 
-    void updateAddress (Address address, Long detailsId);
+    Address updateAddress (Address address, Long detailsId);
+
+
 }

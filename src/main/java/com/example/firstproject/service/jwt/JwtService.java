@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final byte[] SECRET_KEY = JwtUtil.getEncryptedSecret();
+    private final byte[] SECRET_KEY = getEncryptedSecret();
+    private static final String secret = "Some_very_long_message_for_better_security";
 
     @Autowired
     JwtService jwtService;
@@ -61,6 +63,16 @@ public class JwtService {
     public Boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public Long getIdFromAuthHeader(String authHeader){
+        String id = jwtService.extractClaim(authHeader.substring(7), Claims::getId);
+        return Long.parseLong(id);
+    }
+
+    public static byte[] getEncryptedSecret(){
+        String encryptedSecret = DatatypeConverter.printBase64Binary(secret.getBytes());
+        return DatatypeConverter.parseBase64Binary(encryptedSecret);
     }
 
 

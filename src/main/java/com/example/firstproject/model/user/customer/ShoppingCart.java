@@ -1,6 +1,7 @@
 package com.example.firstproject.model.user.customer;
 
 import com.example.firstproject.model.item.CartItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class ShoppingCart {
         return cartItems;
     }
 
+    @JsonIgnore
     public Long getId() {
         return id;
     }

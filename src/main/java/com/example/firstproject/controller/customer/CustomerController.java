@@ -6,13 +6,13 @@ import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.Details;
 import com.example.firstproject.model.user.customer.ShoppingCart;
 import com.example.firstproject.service.customer.CustomerService;
-import com.example.firstproject.service.jwt.JwtUtil;
+import com.example.firstproject.service.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class CustomerController {
@@ -23,7 +23,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @Autowired
-    JwtUtil jwtUtil;
+    JwtService jwtService;
 
     @PostMapping(value = "/customers")
     public ResponseEntity<?> create(@RequestBody Customer customer) {
@@ -33,81 +33,70 @@ public class CustomerController {
 
     @GetMapping(value = "/customers/details")
     public ResponseEntity<?> read(@RequestHeader(name = headerName)String header) {
-        Details details = customerService.readDetails(jwtUtil.getIdFromAuthHeader(header));
+        EntityModel<Details> details = customerService.readDetails(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(details, HttpStatus.OK);
     }
 
     @PutMapping(value = "/customers/details")
     public ResponseEntity<?> update(@RequestBody Details details, @RequestHeader(name = headerName)String header){
-        customerService.updateDetails(details, jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "/customers/details")
-    public ResponseEntity<?> delete(@RequestHeader(name = headerName)String header){
-        customerService.deleteDetails(jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(HttpStatus.OK);
-
+        EntityModel<Details> result = customerService.updateDetails(details, jwtService.getIdFromAuthHeader(header));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "/customers/details/addresses")
     public ResponseEntity<?> readAddress(@RequestHeader(name = headerName)String header) {
-        Address address = customerService.readAddress(jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(address, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/customers/details/addresses")
-    public ResponseEntity<?> createAddress(@RequestBody Address address, @RequestHeader(name = headerName)String header) {
-        customerService.createAddress(address, jwtUtil.getIdFromAuthHeader(header));
+        Address address = customerService.readAddress(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(address, HttpStatus.OK);
     }
 
     @PutMapping(value = "/customers/details/addresses")
     public ResponseEntity<?> updateAddress(@RequestBody Address address, @RequestHeader(name = headerName)String header){
-        customerService.updateAddress(address, jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(HttpStatus.OK);
+        Address result = customerService.updateAddress(address, jwtService.getIdFromAuthHeader(header));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/customers/details/addresses")
-    public ResponseEntity<?> deleteAddress(@RequestHeader(name = headerName)String header){
-        customerService.deleteAddress(jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(HttpStatus.OK);
-
+    @PutMapping(value = "/customers/carts/{productId}")
+    public ResponseEntity<?> addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
+        EntityModel<ShoppingCart> cart = customerService.addItemToCart(jwtService.getIdFromAuthHeader(header), productId);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/customers/shoppingCarts")
+    @DeleteMapping(value = "/customers/carts/{itemId}")
+    public ResponseEntity<?> removeFromCart(@RequestHeader(name = headerName)String header, @PathVariable Long itemId) {
+        EntityModel<ShoppingCart> cart = customerService.removeItemFromCart(jwtService.getIdFromAuthHeader(header), itemId);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/customers/carts")
     public ResponseEntity<?> readShoppingCart(@RequestHeader(name = headerName)String header) {
-        ShoppingCart shoppingCart = customerService.readCart(jwtUtil.getIdFromAuthHeader(header));
-        return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
+        EntityModel<ShoppingCart> cart = customerService.readCart(jwtService.getIdFromAuthHeader(header));
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/customers/shoppingCarts")
+
+    @PostMapping(value = "/customers/carts")
     public ResponseEntity<?> confirmCart(@RequestHeader(name = headerName)String header) {
-        CustomerOrder customerOrder = customerService.CartToOrder(jwtUtil.getIdFromAuthHeader(header));
+        EntityModel<CustomerOrder> customerOrder = customerService.CartToOrder(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(customerOrder, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/customers/carts")
+    public ResponseEntity<?> emptyCart(@RequestHeader(name = headerName)String header) {
+        EntityModel<ShoppingCart> cart = customerService.emptyCart(jwtService.getIdFromAuthHeader(header));
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @GetMapping(value = "/customers/orders")
     public ResponseEntity<?> readOrderHistory(@RequestHeader(name = headerName)String header) {
-        List<CustomerOrder> orderHistory = customerService.getOrderHistory(jwtUtil.getIdFromAuthHeader(header));
+        CollectionModel<EntityModel<CustomerOrder>> orderHistory = customerService.getOrderHistory(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(orderHistory, HttpStatus.OK);
     }
 
     @GetMapping(value = "/customers/orders/{orderId}")
     public ResponseEntity<?> readOrder(@RequestHeader(name = headerName)String header, @PathVariable Long orderId) {
-        CustomerOrder customerOrder = customerService.readOrder(jwtUtil.getIdFromAuthHeader(header), orderId);
+        EntityModel<CustomerOrder> customerOrder = customerService.readOrder(jwtService.getIdFromAuthHeader(header), orderId);
         return new ResponseEntity<>(customerOrder, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/customers/carts/{productId}")
-    public ResponseEntity<?> addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
-        customerService.addItemToCart(jwtUtil.getIdFromAuthHeader(header), productId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
-    @DeleteMapping(value = "/customers/carts/{itemId}")
-    public ResponseEntity<?> removeFromCart(@RequestHeader(name = headerName)String header, @PathVariable Long itemId) {
-        customerService.removeItemFromCart(jwtUtil.getIdFromAuthHeader(header), itemId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

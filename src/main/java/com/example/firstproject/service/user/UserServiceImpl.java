@@ -1,6 +1,7 @@
 package com.example.firstproject.service.user;
 
 import com.example.firstproject.model.user.User;
+import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,14 @@ public class UserServiceImpl implements UserService {
     public void create(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public void create(Customer customer){
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customer.setActive(true);
+        customer.setRoles("ROLE_CUSTOMER");
+        userRepository.save(customer);
     }
 
 
