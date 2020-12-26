@@ -2,9 +2,9 @@ package com.example.firstproject.controller.customer;
 
 import com.example.firstproject.model.order.CustomerOrder;
 import com.example.firstproject.model.user.customer.Address;
+import com.example.firstproject.model.user.customer.Cart;
 import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.Details;
-import com.example.firstproject.model.user.customer.ShoppingCart;
 import com.example.firstproject.service.customer.CustomerService;
 import com.example.firstproject.service.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,19 +57,19 @@ public class CustomerController {
 
     @PutMapping(value = "/customers/carts/{productId}")
     public ResponseEntity<?> addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
-        EntityModel<ShoppingCart> cart = customerService.addItemToCart(jwtService.getIdFromAuthHeader(header), productId);
+        EntityModel<Cart> cart = customerService.addItemToCart(jwtService.getIdFromAuthHeader(header), productId);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/customers/carts/{itemId}")
     public ResponseEntity<?> removeFromCart(@RequestHeader(name = headerName)String header, @PathVariable Long itemId) {
-        EntityModel<ShoppingCart> cart = customerService.removeItemFromCart(jwtService.getIdFromAuthHeader(header), itemId);
+        EntityModel<Cart> cart = customerService.removeItemFromCart(jwtService.getIdFromAuthHeader(header), itemId);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @GetMapping(value = "/customers/carts")
     public ResponseEntity<?> readShoppingCart(@RequestHeader(name = headerName)String header) {
-        EntityModel<ShoppingCart> cart = customerService.readCart(jwtService.getIdFromAuthHeader(header));
+        EntityModel<Cart> cart = customerService.readCart(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
@@ -82,7 +82,7 @@ public class CustomerController {
 
     @DeleteMapping(value = "/customers/carts")
     public ResponseEntity<?> emptyCart(@RequestHeader(name = headerName)String header) {
-        EntityModel<ShoppingCart> cart = customerService.emptyCart(jwtService.getIdFromAuthHeader(header));
+        EntityModel<Cart> cart = customerService.emptyCart(jwtService.getIdFromAuthHeader(header));
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 

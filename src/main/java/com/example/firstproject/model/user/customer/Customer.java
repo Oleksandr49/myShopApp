@@ -16,7 +16,7 @@ public class Customer extends User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
-    private final ShoppingCart shoppingCart = new ShoppingCart();
+    private final Cart cart = new Cart();
 
     public Customer(){
         super();
@@ -26,7 +26,7 @@ public class Customer extends User {
         return details;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
+    public Cart getShoppingCart() {
+        return cart;
     }
 }

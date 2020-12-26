@@ -1,6 +1,6 @@
 package com.example.firstproject.model.item;
 
-import com.example.firstproject.model.user.customer.ShoppingCart;
+import com.example.firstproject.model.user.customer.Cart;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
@@ -10,15 +10,15 @@ import javax.persistence.ManyToOne;
 @Entity
 public class CartItem extends Item {
     @ManyToOne
-    @JoinColumn(name = "shoppingCart_fk")
-    private ShoppingCart shoppingCart;
+    @JoinColumn(name = "cart_fk")
+    private Cart cart;
 
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     @JsonIgnore
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
+    public Cart getCart() {
+        return cart;
     }
 }

@@ -3,7 +3,7 @@ package com.example.firstproject.service.product.item;
 import com.example.firstproject.controller.customer.CustomerController;
 import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.item.Item;
-import com.example.firstproject.model.user.customer.ShoppingCart;
+import com.example.firstproject.model.user.customer.Cart;
 import com.example.firstproject.repository.ItemRepository;
 import com.example.firstproject.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +33,9 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void addItemToCart(ShoppingCart shoppingCart, Long productId) {
+    public void addItemToCart(Cart cart, Long productId) {
         CartItem cartItem = (CartItem) createCartItem(productId);
-        cartItem.setShoppingCart(shoppingCart);
+        cartItem.setCart(cart);
         saveItem(cartItem);
     }
 

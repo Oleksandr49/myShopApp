@@ -2,9 +2,9 @@ package com.example.firstproject.service.customer;
 
 import com.example.firstproject.model.order.CustomerOrder;
 import com.example.firstproject.model.user.customer.Address;
+import com.example.firstproject.model.user.customer.Cart;
 import com.example.firstproject.model.user.customer.Customer;
 import com.example.firstproject.model.user.customer.Details;
-import com.example.firstproject.model.user.customer.ShoppingCart;
 import com.example.firstproject.repository.CustomerRepository;
 import com.example.firstproject.service.customer.cart.CartService;
 import com.example.firstproject.service.customer.details.DetailsService;
@@ -73,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public EntityModel<ShoppingCart> readCart(Long customerId) {
+    public EntityModel<Cart> readCart(Long customerId) {
         return cartService.toModel(customerRepository.getOne(customerId).getShoppingCart());
     }
 
@@ -86,24 +86,24 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public EntityModel<ShoppingCart> emptyCart(Long id) {
-        ShoppingCart shoppingCart = customerRepository.getOne(id).getShoppingCart();
-        cartService.emptyCart(shoppingCart);
-        return cartService.toModel(shoppingCart);
+    public EntityModel<Cart> emptyCart(Long id) {
+        Cart cart = customerRepository.getOne(id).getShoppingCart();
+        cartService.emptyCart(cart);
+        return cartService.toModel(cart);
     }
 
     @Override
-    public EntityModel<ShoppingCart> addItemToCart(Long customerId, Long productId) {
-        ShoppingCart shoppingCart = customerRepository.getOne(customerId).getShoppingCart();
-        cartService.addItemToCart(shoppingCart, productId);
-        return cartService.toModel(shoppingCart);
+    public EntityModel<Cart> addItemToCart(Long customerId, Long productId) {
+        Cart cart = customerRepository.getOne(customerId).getShoppingCart();
+        cartService.addItemToCart(cart, productId);
+        return cartService.toModel(cart);
     }
 
     @Override
-    public EntityModel<ShoppingCart> removeItemFromCart(Long customerId, Long itemId) {
-        ShoppingCart shoppingCart = customerRepository.getOne(customerId).getShoppingCart();
-        cartService.removeItemFromCart(shoppingCart, itemId);
-        return cartService.toModel(shoppingCart);
+    public EntityModel<Cart> removeItemFromCart(Long customerId, Long itemId) {
+        Cart cart = customerRepository.getOne(customerId).getShoppingCart();
+        cartService.removeItemFromCart(cart, itemId);
+        return cartService.toModel(cart);
     }
 
 }

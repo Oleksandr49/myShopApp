@@ -3,7 +3,7 @@ package com.example.firstproject.service.customer.cart;
 import com.example.firstproject.controller.customer.CustomerController;
 import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.item.Item;
-import com.example.firstproject.model.user.customer.ShoppingCart;
+import com.example.firstproject.model.user.customer.Cart;
 import com.example.firstproject.repository.CartRepository;
 import com.example.firstproject.service.product.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,35 +25,35 @@ public class CartServiceImpl implements CartService{
     ItemService itemService;
 
     @Override
-    public void emptyCart(ShoppingCart shoppingCart) {
-        deleteCartItems(shoppingCart.getCartItems());
-        shoppingCart.getCartItems().clear();
-        updateCartTotal(shoppingCart);
+    public void emptyCart(Cart cart) {
+        deleteCartItems(cart.getCartItems());
+        cart.getCartItems().clear();
+        updateCartTotal(cart);
     }
 
     @Override
-    public void addItemToCart(ShoppingCart shoppingCart, Long productId) {
-        itemService.addItemToCart(shoppingCart, productId);
-        updateCartTotal(shoppingCart);
+    public void addItemToCart(Cart cart, Long productId) {
+        itemService.addItemToCart(cart, productId);
+        updateCartTotal(cart);
     }
 
     @Override
-    public void removeItemFromCart(ShoppingCart shoppingCart, Long itemId) {
+    public void removeItemFromCart(Cart cart, Long itemId) {
         itemService.delete(itemId);
-        updateCartTotal(shoppingCart);
+        updateCartTotal(cart);
     }
 
     @Override
-    public EntityModel<ShoppingCart> toModel(ShoppingCart entity) {
+    public EntityModel<Cart> toModel(Cart entity) {
         return EntityModel.of(entity,
                 linkTo(methodOn(CustomerController.class).readShoppingCart("")).withSelfRel(),
                 linkTo(methodOn(CustomerController.class).confirmCart("")).withRel("OrderCart"),
                 linkTo(methodOn(CustomerController.class).emptyCart("")).withRel("EmptyCart"));
     }
 
-    private void updateCartTotal(ShoppingCart shoppingCart){
-        shoppingCart.setTotalCost(calculateCartItems(shoppingCart));
-        cartRepository.save(shoppingCart);
+    private void updateCartTotal(Cart cart){
+        cart.setTotalCost(calculateCartItems(cart));
+        cartRepository.save(cart);
     }
 
     private void deleteCartItems(List<CartItem> cartItems){
@@ -62,9 +62,9 @@ public class CartServiceImpl implements CartService{
         }
     }
 
-    private Double calculateCartItems(ShoppingCart shoppingCart){
+    private Double calculateCartItems(Cart cart){
         Double totalCost = 0.00;
-        for(Item item : shoppingCart.getCartItems()){
+        for(Item item : cart.getCartItems()){
             totalCost += item.getCost();
         }
         return totalCost;

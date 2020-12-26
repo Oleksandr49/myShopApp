@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class ShoppingCart {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Double totalCost = 0.00;
-    @OneToMany(mappedBy = "shoppingCart")
+    @OneToMany(mappedBy = "cart")
     private final List<CartItem> cartItems = new ArrayList<>();
 
     public Double getTotalCost() {

@@ -7,8 +7,8 @@ import com.example.firstproject.model.item.CartItem;
 import com.example.firstproject.model.item.OrderItem;
 import com.example.firstproject.model.order.CustomerOrder;
 import com.example.firstproject.model.order.OrderState;
+import com.example.firstproject.model.user.customer.Cart;
 import com.example.firstproject.model.user.customer.Customer;
-import com.example.firstproject.model.user.customer.ShoppingCart;
 import com.example.firstproject.repository.OrderRepository;
 import com.example.firstproject.service.product.item.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +85,8 @@ public class OrderServiceImpl implements OrderService{
         return null;
     }
 
-    private void transferItems(ShoppingCart shoppingCart, CustomerOrder customerOrder){
-        for(CartItem cartItem : shoppingCart.getCartItems()){
+    private void transferItems(Cart cart, CustomerOrder customerOrder){
+        for(CartItem cartItem : cart.getCartItems()){
             OrderItem orderItem = new OrderItem();
             orderItem.setCustomerOrder(customerOrder);
             orderItem.setProductId(cartItem.getProductId());
