@@ -1,13 +1,10 @@
 package eCommerce.myShopApplication.model.jwt;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public class AuthenticationResponse {
+    @Getter
     private final String jwt;
-
-    public AuthenticationResponse(String jwt){
-        this.jwt = jwt;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
 }

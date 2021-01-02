@@ -3,9 +3,11 @@ package eCommerce.myShopApplication.controller.products;
 import eCommerce.myShopApplication.model.product.Product;
 import eCommerce.myShopApplication.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class ProductController {
@@ -13,32 +15,32 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @GetMapping(value = "/products")
-    public ResponseEntity<?> readAll() {
-        return new ResponseEntity<>(productService.readAllProducts(), HttpStatus.OK);
+    @GetMapping("/products")
+    public CollectionModel<EntityModel<Product>> readAll() {
+        return productService.readAllProducts();
     }
 
-    @GetMapping(value = "/products/{id}")
-    public ResponseEntity<?> readProductById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.read(id), HttpStatus.OK);
+    @GetMapping("/products/{id}")
+    public EntityModel<Product> readProductById(@PathVariable Long id) {
+        return productService.read(id);
 
     }
 
-    @PostMapping(value = "/products")
-    public ResponseEntity<?> create(@RequestBody Product product) {
-        return new ResponseEntity<>(productService.create(product), HttpStatus.CREATED);
+    @PostMapping("/products")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EntityModel<Product> create(@RequestBody Product product) {
+        return productService.create(product);
     }
 
-    @PutMapping(value = "/products/{id}")
-    public ResponseEntity<?> update(@RequestBody Product product, @PathVariable Long id){
-        return new ResponseEntity<>(productService.update(product, id), HttpStatus.ACCEPTED);
+    @PutMapping("/products/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public EntityModel<Product> update(@RequestBody Product product, @PathVariable Long id){
+        return productService.update(product, id);
     }
 
-    @DeleteMapping(value = "/products/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-
-        return productService.delete(id)
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    @DeleteMapping("/products/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Boolean delete(@PathVariable Long id) {
+        return productService.delete(id);
     }
 }

@@ -74,34 +74,34 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public EntityModel<Cart> readCart(Long customerId) {
-        return cartService.toModel(customerRepository.getOne(customerId).getShoppingCart());
+        return cartService.toModel(customerRepository.getOne(customerId).getCart());
     }
 
     @Override
     public EntityModel<CustomerOrder> CartToOrder(Long customerId) {
         Customer customer = customerRepository.getOne(customerId);
         EntityModel<CustomerOrder> customerOrder = orderService.assembleOrder(customer);
-        cartService.emptyCart(customer.getShoppingCart());
+        cartService.emptyCart(customer.getCart());
         return customerOrder;
     }
 
     @Override
     public EntityModel<Cart> emptyCart(Long id) {
-        Cart cart = customerRepository.getOne(id).getShoppingCart();
+        Cart cart = customerRepository.getOne(id).getCart();
         cartService.emptyCart(cart);
         return cartService.toModel(cart);
     }
 
     @Override
     public EntityModel<Cart> addItemToCart(Long customerId, Long productId) {
-        Cart cart = customerRepository.getOne(customerId).getShoppingCart();
+        Cart cart = customerRepository.getOne(customerId).getCart();
         cartService.addItemToCart(cart, productId);
         return cartService.toModel(cart);
     }
 
     @Override
     public EntityModel<Cart> removeItemFromCart(Long customerId, Long itemId) {
-        Cart cart = customerRepository.getOne(customerId).getShoppingCart();
+        Cart cart = customerRepository.getOne(customerId).getCart();
         cartService.removeItemFromCart(cart, itemId);
         return cartService.toModel(cart);
     }

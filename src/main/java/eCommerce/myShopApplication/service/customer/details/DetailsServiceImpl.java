@@ -52,7 +52,7 @@ public class DetailsServiceImpl implements DetailsService {
         details.setEmail(newDetails.getEmail());
         details.setFirstName(newDetails.getFirstName());
         details.setSecondName(newDetails.getSecondName());
-        details.setMale(newDetails.getMale());
+        details.setIsMale(newDetails.getIsMale());
     }
 
     private void setNewAddress(Address address, Address newAddress){
