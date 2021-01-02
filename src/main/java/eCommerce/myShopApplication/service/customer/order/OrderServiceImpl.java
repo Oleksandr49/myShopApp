@@ -41,10 +41,10 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public EntityModel<CustomerOrder> assembleOrder(Customer customer) {
         CustomerOrder customerOrder = createOrder();
-        customerOrder.setTotalCost(customer.getShoppingCart().getTotalCost());
+        customerOrder.setTotalCost(customer.getCart().getTotalCost());
         customerOrder.setDetails(customer.getDetails());
         orderRepository.save(customerOrder);
-        transferItems(customer.getShoppingCart(), customerOrder);
+        transferItems(customer.getCart(), customerOrder);
         return toModel(customerOrder);
     }
 
@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService{
     public EntityModel<CustomerOrder> toModel(CustomerOrder entity) {
 
         return EntityModel.of(entity,
-                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readOrder("", entity.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readOrder("", entity.getOrderId())).withSelfRel(),
                 linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"),
                 WebMvcLinkBuilder.linkTo(methodOn(PayPallController.class).makePayment(entity)).withRel("Payment"));
     }
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService{
 
     private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){
         for(CustomerOrder order : orderHistory){
-            if(order.getId().equals(orderId)){
+            if(order.getOrderId().equals(orderId)){
                 return order;
             }
         }
