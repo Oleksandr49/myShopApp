@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/javascript.js}"></script>
+    <title>Add CSS and JS to Thymeleaf</title>
+
+</head>
+<body>
+
+<form action="#" th:action="@{/customers}" th:object="${customer}" method="post">
+
+    <label for="username"> Username </label>
+        <input type="text" th:field="*{username}" th:required="required" id="username"/>
+    <label th:value="password"> Password </label>
+        <input type="text" th:field="*{password}" th:required="required" id="password"/>
+    <input type="submit" value="Register"/>
+</form>
+
+<button type="button" th:onclick="sendRequest()">Check</button>
+
+</body>
+</html>
+

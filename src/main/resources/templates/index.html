@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/javascript.js}"></script>
+    <title>Main Page</title>
+</head>
+<body>
+Main page
+<form action="#" th:action="@{/customers}" th:object="${customer}" method="post" id="registerForm">
+    <label for="username"> Username </label>
+    <input type="text" th:field="*{username}" th:required="required" id="username"/>
+    <label th:value="password"> Password </label>
+    <input type="text" th:field="*{password}" th:required="required" id="password"/>
+    <button type="button" th:onclick="sendRequest()">Check</button>
+</form>
+
+</body>
+</html>
