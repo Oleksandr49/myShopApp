@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet">
     <script type="text/javascript" th:src="@{/js/javascript.js}"></script>
+    <script type="text/javascript" th:src="@{/js/testScript.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Main Page</title>
 </head>
+
 <body>
-Main page
-<form action="#" th:action="@{/customers}" th:object="${customer}" method="post" id="registerForm">
-    <label for="username"> Username </label>
-    <input type="text" th:field="*{username}" th:required="required" id="username"/>
-    <label th:value="password"> Password </label>
-    <input type="text" th:field="*{password}" th:required="required" id="password"/>
-    <button type="button" th:onclick="sendRequest()">Check</button>
+<h4>Main page</h4>
+
+<h5>Registration</h5>
+<form>
+    <label for="username">First name:</label><br>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Last name:</label><br>
+    <input type="password" id="password" name="password"><br><br>
+    <button type="submit" th:onclick="registration()"> Register </button>
 </form>
+
+<h5>SignIn</h5>
+<form>
+    <label for="username">First name:</label><br>
+    <input type="text" id="usernameSignIn" name="username"><br>
+    <label for="password">Last name:</label><br>
+    <input type="password" id="passwordSignIn" name="password"><br><br>
+    <button type="button" th:onclick="signIn()"> SignIn </button>
+</form>
+
+<div id="result"></div>
+<button type="button" th:onclick="getProduct()"> getProduct </button>
 
 </body>
 </html>

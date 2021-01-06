@@ -28,7 +28,7 @@ public class AuthenticationController {
     JwtService jwtService;
 
 
-    @PostMapping("/authentication")
+    @PostMapping(value = "/authentication")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception{

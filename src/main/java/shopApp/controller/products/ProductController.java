@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<Product> create(@RequestBody Product product) {
         return productService.create(product);
     }

@@ -27,7 +27,7 @@ public class CustomerController {
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void create(@RequestBody Customer customer) {
         customerService.create(customer);
     }
