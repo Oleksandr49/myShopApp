@@ -6,6 +6,16 @@ form {
     background-color: aquamarine;
 }
 
+.registration{
+    background-color: crimson;
+    position: center;
+}
+
+.signIn{
+    background-color: brown;
+    position: center;
+}
+
 h1 {
     color: white;
     text-align: center;

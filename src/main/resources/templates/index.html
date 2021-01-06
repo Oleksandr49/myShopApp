@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <link th:href="@{/css/main.css}" type="text/css" rel="stylesheet">
     <script type="text/javascript" th:src="@{/js/javascript.js}"></script>
-    <script type="text/javascript" th:src="@{/js/testScript.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Main Page</title>
 </head>
@@ -14,25 +13,43 @@
 <h4>Main page</h4>
 
 <h5>Registration</h5>
-<form>
+<div class="registration">
     <label for="username">First name:</label><br>
     <input type="text" id="username" name="username"><br>
     <label for="password">Last name:</label><br>
     <input type="password" id="password" name="password"><br><br>
     <button type="submit" th:onclick="registration()"> Register </button>
-</form>
+</div>
 
 <h5>SignIn</h5>
-<form>
+<div class="signIn">
     <label for="username">First name:</label><br>
     <input type="text" id="usernameSignIn" name="username"><br>
     <label for="password">Last name:</label><br>
     <input type="password" id="passwordSignIn" name="password"><br><br>
     <button type="button" th:onclick="signIn()"> SignIn </button>
-</form>
+</div>
 
-<div id="result"></div>
+<div id="product"></div>
 <button type="button" th:onclick="getProduct()"> getProduct </button>
+<div id="allProducts"></div>
+<button type="button" th:onclick="getAllProducts()"> getAllProducts </button>
+
+
+<div id="details" class="details">
+    <label for="firstName">First name:</label><br>
+    <input type="text" id="firstName" name="firstName"><br>
+
+    <label for="secondName">Last name:</label><br>
+    <input type="text" id="secondName" name="secondName"><br>
+
+    <label for="eMail">eMail:</label><br>
+    <input type="email" id="eMail" name="eMail"><br>
+
+    <button type="button" th:onclick="confirmDetails()"> confirmDetails </button>
+    <button type="button" th:onclick="getDetails()"> getDetails </button>
+</div>
+
 
 </body>
 </html>

@@ -1,5 +1,4 @@
-
-let authenticationToken;
+var authenticationToken = localStorage.getItem("Authorization");
 
 function registration(){
     let url = "/customers";
@@ -12,48 +11,62 @@ function registration(){
 }
 
 function signIn() {
-    console.log("singIn");
     let url = "/authentication";
     let usernameID = 'usernameSignIn';
     let passwordID = 'passwordSignIn';
     let customer = {"username" : getDataFromHtml(usernameID),
                     "password" : getDataFromHtml(passwordID)}
     let json = JSON.stringify(customer);
-    console.log("send customer");
     postRequest(url, json, setJWT);
-    createElement();
 }
 
-function createElement(){
-    let para = document.createElement("p");
-    let node = document.createTextNode("This is new.");
-    para.appendChild(node);
-
-    let element = document.getElementById("result");
-    element.appendChild(para);
+function setJWT(token){
+    let jwt = JSON.parse(token);
+    let authenticationToken = 'Bearer ' + jwt.jwt;
+    localStorage.setItem("Authorization", authenticationToken);
 }
 
 function getProduct(){
-    console.log("getProduct");
-    let url = "/products/1"
-    getRequest(url, getResponse);
+    let url = "/products/1";
+    let displayElementId = "product";
+    getRequest(url, displayElementId, getResponse);
 }
 
-function getResponse(response){
-    let text = JSON.parse(response);
-    let elem = document.createElement("p");
-    let node = document.createTextNode(text.productName);
-    elem.appendChild(node);
-
-    let file = document.getElementById("result");
-    file.appendChild(elem);
+function getAllProducts(){
+    let url = "/products";
+    let displayElementId = "allProducts";
+    getRequest(url, displayElementId, getResponse);
 }
 
-function getRequest(url, callback){
+function getResponse(displayElementID, response){
+    document.getElementById(displayElementID).innerHTML = response;
+}
+
+
+function confirmDetails(){
+    let url = "/customers/details";
+    let firstName = 'firstName';
+    let lastName = 'secondName';
+    let email = 'eMail';
+    let customerDetails = {"firstName" : getDataFromHtml(firstName),
+        "secondName" : getDataFromHtml(lastName), "email" : getDataFromHtml(email)}
+    let json = JSON.stringify(customerDetails);
+    console.log("Details: " + json);
+    putRequest(url, json, setJWT);
+}
+
+function getDetails(){
+    let url = "/customers/details";
+    let displayElement = "details";
+    getRequest(url, displayElement, getResponse);
+}
+
+function getRequest(url, displayElementId, callback){
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.setRequestHeader("Content-Type", "application/json");
     if(authenticationToken !== undefined){
+        console.log("Setting jwt = Authorization " + authenticationToken);
         xhr.setRequestHeader("Authorization", authenticationToken);
     }
     xhr.send();
@@ -62,18 +75,21 @@ function getRequest(url, callback){
             if (xhr.status === 200){
                 let response = xhr.responseText;
                 console.log(response);
-                callback(response);
+                callback(displayElementId, response);
             }
     };
 }
 
-
-function postRequest(url, payload, callback, authenticationToken){
+function putRequest(url, payload, callback){
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
+    xhr.open("PUT", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    if(authenticationToken !== undefined){
+        console.log("Setting jwt = Authorization " + authenticationToken);
+        xhr.setRequestHeader("Authorization", authenticationToken);
+    }
     xhr.send(payload);
-    console.log("request send");
+    console.log("put request send");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4)
             if (xhr.status === 202){
@@ -84,10 +100,20 @@ function postRequest(url, payload, callback, authenticationToken){
     };
 }
 
-function setJWT(token){
-    let jwt = JSON.parse(token);
-    authenticationToken = 'Bearer ' + jwt.jwt;
-    console.log(authenticationToken);
+function postRequest(url, payload, callback, authenticationToken){
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(payload);
+    console.log("post request send");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4)
+            if (xhr.status === 202){
+                let response = xhr.responseText;
+                console.log("response is " + response);
+                callback(response);
+            }
+    };
 }
 
 function getDataFromHtml(elementID){
