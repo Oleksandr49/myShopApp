@@ -14,40 +14,31 @@
 
 <h5>Registration</h5>
 <div class="registration">
-    <label for="username">First name:</label><br>
+    <label for="username">Username:</label><br>
     <input type="text" id="username" name="username"><br>
-    <label for="password">Last name:</label><br>
+    <label for="password">Password:</label><br>
     <input type="password" id="password" name="password"><br><br>
-    <button type="submit" th:onclick="registration()"> Register </button>
+    <button type="button" th:onclick="User.registration()"> Register </button>
+    <button type="button" th:onclick="User.signIn()"> SignIn </button>
 </div>
 
-<h5>SignIn</h5>
-<div class="signIn">
-    <label for="username">First name:</label><br>
-    <input type="text" id="usernameSignIn" name="username"><br>
-    <label for="password">Last name:</label><br>
-    <input type="password" id="passwordSignIn" name="password"><br><br>
-    <button type="button" th:onclick="signIn()"> SignIn </button>
+<div id="productsButtons">
+<button type="button" th:onclick="Product.getProduct()"> getProduct </button>
+<button type="button" th:onclick="Product.getAllProducts()"> getAllProducts </button>
 </div>
 
-<div id="product"></div>
-<button type="button" th:onclick="getProduct()"> getProduct </button>
-<div id="allProducts"></div>
-<button type="button" th:onclick="getAllProducts()"> getAllProducts </button>
-
-
-<div id="details" class="details">
+<div class="detailsInput">
     <label for="firstName">First name:</label><br>
     <input type="text" id="firstName" name="firstName"><br>
 
     <label for="secondName">Last name:</label><br>
     <input type="text" id="secondName" name="secondName"><br>
 
-    <label for="eMail">eMail:</label><br>
-    <input type="email" id="eMail" name="eMail"><br>
+    <label for="email">eMail:</label><br>
+    <input type="email" id="email" name="email"><br>
 
-    <button type="button" th:onclick="confirmDetails()"> confirmDetails </button>
-    <button type="button" th:onclick="getDetails()"> getDetails </button>
+    <button type="button" th:onclick="UserDetails.confirmDetails()"> confirmDetails </button>
+    <button type="button" th:onclick="UserDetails.getDetails()"> getDetails </button>
 </div>
 
 

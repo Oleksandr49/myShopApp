@@ -1,123 +1,153 @@
-var authenticationToken = localStorage.getItem("Authorization");
 
-function registration(){
-    let url = "/customers";
-    let usernameID = 'username';
-    let passwordID = 'password';
-    let customer = {"username" : getDataFromHtml(usernameID),
-        "password" : getDataFromHtml(passwordID)}
-    let json = JSON.stringify(customer);
-    postRequest(url, json);
-}
-
-function signIn() {
-    let url = "/authentication";
-    let usernameID = 'usernameSignIn';
-    let passwordID = 'passwordSignIn';
-    let customer = {"username" : getDataFromHtml(usernameID),
-                    "password" : getDataFromHtml(passwordID)}
-    let json = JSON.stringify(customer);
-    postRequest(url, json, setJWT);
-}
-
-function setJWT(token){
-    let jwt = JSON.parse(token);
-    let authenticationToken = 'Bearer ' + jwt.jwt;
-    localStorage.setItem("Authorization", authenticationToken);
-}
-
-function getProduct(){
-    let url = "/products/1";
-    let displayElementId = "product";
-    getRequest(url, displayElementId, getResponse);
-}
-
-function getAllProducts(){
-    let url = "/products";
-    let displayElementId = "allProducts";
-    getRequest(url, displayElementId, getResponse);
-}
-
-function getResponse(displayElementID, response){
-    document.getElementById(displayElementID).innerHTML = response;
-}
-
-
-function confirmDetails(){
-    let url = "/customers/details";
-    let firstName = 'firstName';
-    let lastName = 'secondName';
-    let email = 'eMail';
-    let customerDetails = {"firstName" : getDataFromHtml(firstName),
-        "secondName" : getDataFromHtml(lastName), "email" : getDataFromHtml(email)}
-    let json = JSON.stringify(customerDetails);
-    console.log("Details: " + json);
-    putRequest(url, json, setJWT);
-}
-
-function getDetails(){
-    let url = "/customers/details";
-    let displayElement = "details";
-    getRequest(url, displayElement, getResponse);
-}
-
-function getRequest(url, displayElementId, callback){
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    if(authenticationToken !== undefined){
-        console.log("Setting jwt = Authorization " + authenticationToken);
-        xhr.setRequestHeader("Authorization", authenticationToken);
+class User{
+    constructor(username, password) {
+        this.username = username;
+        this.password = password;
     }
-    xhr.send();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4)
-            if (xhr.status === 200){
-                let response = xhr.responseText;
-                console.log(response);
-                callback(displayElementId, response);
-            }
-    };
+
+    static registration(){
+        let url, customer, json;
+
+        url = "/customers";
+        customer = new User($('#username').val(), $('#password').val());
+        json = JSON.stringify(customer);
+
+        Request.request(Request.type(2), url, function (){}, json);
+    }
+
+    static signIn() {
+        let url, customer, json, setJWT;
+
+        url = "/authentication";
+        customer = new User($('#username').val(), $('#password').val());
+        json = JSON.stringify(customer);
+        setJWT = function (token){
+            localStorage.setItem("Authorization", 'Bearer ' + token.jwt);
+        }
+
+        Request.request(Request.type(2), url, setJWT, json);
+    }
 }
 
-function putRequest(url, payload, callback){
-    let xhr = new XMLHttpRequest();
-    xhr.open("PUT", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    if(authenticationToken !== undefined){
-        console.log("Setting jwt = Authorization " + authenticationToken);
-        xhr.setRequestHeader("Authorization", authenticationToken);
+class Request {
+
+    static type(type){
+        switch (type){
+            case 1: return "GET";
+            case 2: return "POST";
+            case 3: return "PUT";
+            case 4: return "DELETE";
+        }
     }
-    xhr.send(payload);
-    console.log("put request send");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4)
-            if (xhr.status === 202){
-                let response = xhr.responseText;
-                console.log("response is " + response);
+
+    static request(type, url, callback, payload){
+        console.log(payload);
+        $.ajax({
+            url:url,
+            type:type,
+            data:payload,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function (response){
                 callback(response);
             }
-    };
-}
+        })
+    }
 
-function postRequest(url, payload, callback, authenticationToken){
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(payload);
-    console.log("post request send");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4)
-            if (xhr.status === 202){
-                let response = xhr.responseText;
-                console.log("response is " + response);
+    static authenticatedRequest(type, url, callback, payload){
+        let tokenValue;
+
+        tokenValue = localStorage.getItem('Authorization');
+
+        $.ajax({
+            url:url,
+            headers:{"Authorization" : tokenValue},
+            type:type,
+            data:payload,
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function (response){
                 callback(response);
             }
-    };
+        })
+    }
 }
 
-function getDataFromHtml(elementID){
-    return document.getElementById(elementID).value;
+class Product {
+
+    constructor() {
+    }
+
+    static getProduct() {
+        let url, displayProduct, name, price, div;
+
+        url = "/products/1";
+        displayProduct = function (product) {
+            name = product.productName + '</br>';
+            price = product.productPrice + '</br>';
+            div = '<div class="product">' + name + price + '</br> </div>';
+            $("#productsButtons").prepend(div);
+        }
+
+        Request.authenticatedRequest(Request.type(1), url, displayProduct);
+    }
+
+    static getAllProducts() {
+        let url, displayProducts, div, product, name, price;
+        url = "/products";
+
+        displayProducts = function (products) {
+            for (product of products._embedded.productList) {
+                name = product.productName + '</br>';
+                price = product.productPrice + '</br>';
+                div = '<div class="product">' + name + price + '</br> </div>';
+                $("#productsButtons").prepend(div);
+            }
+        }
+
+        Request.authenticatedRequest(Request.type(1), url, displayProducts);
+    }
 }
+
+class UserDetails {
+
+    constructor(firstName, secondName, email) {
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.email = email;
+    }
+
+    static confirmDetails() {
+        let url, customerDetails, json;
+
+        url = "/customers/details";
+        customerDetails = new UserDetails  ($('#firstName').val(),
+                                            $('#secondName').val(),
+                                            $('#email').val())
+        json = JSON.stringify(customerDetails);
+        console.log("Details: " + json);
+        Request.authenticatedRequest(Request.type(3), url, function (){}, json);
+    }
+
+    static getDetails() {
+        let url, displayDetails, firstName, lastName, eMail, address, div;
+
+        url = "/customers/details";
+
+        displayDetails = function (details){
+            firstName = details.firstName + '</br>';
+            lastName = details.secondName + '</br>';
+            eMail = details.email + '</br>';
+            address = JSON.stringify(details.address) + '</br>';
+            div = '<div class="details">' + firstName + lastName + eMail + address + '</br> </div>';
+            $(".detailsInput").prepend(div);
+        }
+        Request.authenticatedRequest(Request.type(1), url, displayDetails);
+    }
+}
+
+
+
+
 
 

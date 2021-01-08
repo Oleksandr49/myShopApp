@@ -6,6 +6,16 @@ form {
     background-color: aquamarine;
 }
 
+.product{
+    background-color: lightskyblue;
+    font-size: large;
+    font-style: italic;
+}
+
+.details{
+    background-color: lawngreen;
+}
+
 .registration{
     background-color: crimson;
     position: center;
