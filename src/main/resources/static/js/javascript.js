@@ -1,5 +1,6 @@
 
 class User{
+
     constructor(username, password) {
         this.username = username;
         this.password = password;
@@ -75,33 +76,61 @@ class Request {
 
 class Product {
 
-    constructor() {
+    constructor(product) {
+        this.productID = product.id;
+        this.productName = product.productName;
+        this.productPrice = product.productPrice;
+        this.selfLink = product._links.self.href;
+        this.addToCartLink = product._links.addToCart.href;
     }
 
     static getProduct() {
-        let url, displayProduct, name, price, div;
+        let url, displayProduct;
 
-        url = "/products/1";
-        displayProduct = function (product) {
+        url = "/products/2";
+
+        displayProduct = function (response){
+            let name, price, addToCartButton, div, product;
+
+            product = new Product(response);
             name = product.productName + '</br>';
             price = product.productPrice + '</br>';
-            div = '<div class="product">' + name + price + '</br> </div>';
+
+            addToCartButton = '<button type="button" id="product"> Add to cart </button>';
+
+            div = '<div class="item">' + name + price + addToCartButton + '</br> </div>';
+
             $("#productsButtons").prepend(div);
+
+            $("#product").on("click", null, product, function(){
+                console.log(product.addToCartLink);
+               Request.authenticatedRequest(Request.type(3), product.addToCartLink, function (){});
+                })
         }
 
         Request.authenticatedRequest(Request.type(1), url, displayProduct);
     }
 
     static getAllProducts() {
-        let url, displayProducts, div, product, name, price;
+        let url, displayProducts, div, product, name,
+            price, addToCartButton, item, indexedProduct, listOfProducts;
         url = "/products";
-
-        displayProducts = function (products) {
-            for (product of products._embedded.productList) {
+        listOfProducts = [];
+        displayProducts = function (response) {
+            for (item of response._embedded.productList) {
+                product = new Product(item);
+                listOfProducts.push(product);
                 name = product.productName + '</br>';
                 price = product.productPrice + '</br>';
-                div = '<div class="product">' + name + price + '</br> </div>';
+                addToCartButton = '<button type="button" class="product" id="0"> Add to cart </button>';
+                div = '<div class="item">' + name + price + addToCartButton + '</br> </div>';
                 $("#productsButtons").prepend(div);
+                $(".product#0").attr("id", product.productID);
+                $(".product#" + product.productID).on("click", null, listOfProducts, function(){
+                    indexedProduct = listOfProducts.find(x => x.productID === parseInt($(this).attr("id")));
+                    console.log(indexedProduct.addToCartLink);
+                    Request.authenticatedRequest(Request.type(3), indexedProduct.addToCartLink, function (){});
+                })
             }
         }
 
@@ -111,10 +140,11 @@ class Product {
 
 class UserDetails {
 
-    constructor(firstName, secondName, email) {
+    constructor(firstName, secondName, email, address) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.email = email;
+        this.address = address;
     }
 
     static confirmDetails() {
@@ -143,6 +173,45 @@ class UserDetails {
             $(".detailsInput").prepend(div);
         }
         Request.authenticatedRequest(Request.type(1), url, displayDetails);
+    }
+}
+
+class UserAddress{
+
+    constructor(country, state, city, street, postalCode) {
+        this.country = country;
+        this.state = state;
+        this.city = city;
+        this.street = street;
+        this.postalCode = postalCode;
+    }
+
+    static confirmAddress(){
+        let url, customerAddress, json;
+
+        url = "/customers/addresses";
+        customerAddress = new UserAddress($("#country").val(), $("#state").val(),
+            $("#city").val(), $("#street").val(), $("#postalCode").val(),)
+        json = JSON.stringify(customerAddress);
+        console.log("Address: " + json);
+        Request.authenticatedRequest(Request.type(3), url, function (){}, json);
+    }
+
+    static getAddress(){
+        let url, displayAddress, country, state, city, street, postalCode, div;
+
+        url = "/customers/addresses";
+
+        displayAddress = function (address){
+            country = address.country + '</br>';
+            state = address.state + '</br>';
+            city = address.city + '</br>';
+            street = address.street + '</br>';
+            postalCode = address.postalCode + '</br>';
+            div = '<div class="address">' + country + state + city + street + postalCode + '</br> </div>';
+            $(".addressInput").prepend(div);
+        }
+        Request.authenticatedRequest(Request.type(1), url, displayAddress);
     }
 }
 

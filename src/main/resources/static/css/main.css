@@ -6,14 +6,20 @@ form {
     background-color: aquamarine;
 }
 
-.product{
-    background-color: lightskyblue;
-    font-size: large;
-    font-style: italic;
+.item{
+    background-color: blueviolet;
 }
 
-.details{
+.product{
+    background-color: lightskyblue;
+}
+
+.detailsInput{
     background-color: lawngreen;
+}
+
+.addressInput{
+    background-color: skyblue;
 }
 
 .registration{
