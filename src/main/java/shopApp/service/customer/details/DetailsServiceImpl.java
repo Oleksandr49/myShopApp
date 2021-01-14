@@ -53,6 +53,7 @@ public class DetailsServiceImpl implements DetailsService {
         details.setFirstName(newDetails.getFirstName());
         details.setSecondName(newDetails.getSecondName());
         details.setIsMale(newDetails.getIsMale());
+        details.setAddress(newDetails.getAddress());
     }
 
     private void setNewAddress(Address address, Address newAddress){

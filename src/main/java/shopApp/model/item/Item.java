@@ -1,7 +1,6 @@
 package shopApp.model.item;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -14,7 +13,6 @@ import javax.persistence.Id;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
     private Long productId;
     private Integer amount;

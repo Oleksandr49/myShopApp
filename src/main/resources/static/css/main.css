@@ -2,37 +2,3 @@ body {
     background-color: lightblue;
 }
 
-form {
-    background-color: aquamarine;
-}
-
-.item{
-    background-color: blueviolet;
-}
-
-.product{
-    background-color: lightskyblue;
-}
-
-.detailsInput{
-    background-color: lawngreen;
-}
-
-.addressInput{
-    background-color: skyblue;
-}
-
-.registration{
-    background-color: crimson;
-    position: center;
-}
-
-.signIn{
-    background-color: brown;
-    position: center;
-}
-
-h1 {
-    color: white;
-    text-align: center;
-}

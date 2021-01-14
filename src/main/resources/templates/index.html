@@ -18,49 +18,53 @@
     <input type="text" id="username" name="username"><br>
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password"><br><br>
-    <button type="button" onclick="User.registration()"> Register </button>
-    <button type="button" onclick="User.signIn()"> SignIn </button>
+    <button type="button" onclick="User.registration()" class="registerFormButton"> Register </button>
+    <button type="button" onclick="User.signIn()" class="registerFormButton"> SignIn </button>
 </div>
 
-<div id="productsButtons">
-<button type="button" onclick="Product.getProduct()"> getProduct </button>
-<button type="button" onclick="Product.getAllProducts()"> getAllProducts </button>
+<div class="products">
+<button type="button" onclick="Product.getProducts()" class="productsButtons"> getAllProducts </button>
 </div>
 
-<div class="detailsInput">
+
+<div class="details">
     <label for="firstName">First name:</label><br>
-    <input type="text" id="firstName" name="firstName"><br>
+    <input type="text" class="details" id="firstName" name="firstName"><br>
 
     <label for="secondName">Last name:</label><br>
-    <input type="text" id="secondName" name="secondName"><br>
+    <input type="text" class="details" id="secondName" name="secondName"><br>
 
     <label for="email">eMail:</label><br>
-    <input type="email" id="email" name="email"><br>
+    <input type="email" class="details" id="email" name="email"><br>
+
+    <label for="country">Country:</label><br>
+    <input type="text" class="details" id="country" name="country"><br>
+
+    <label for="state">State:</label><br>
+    <input type="text" class="details" id="state" name="state"><br>
+
+    <label for="city">City:</label><br>
+    <input type="text" class="details" id="city" name="city"><br>
+
+    <label for="street">Street:</label><br>
+    <input type="text" class="details" id="street" name="street"><br>
+
+    <label for="postalCode">Postal Code:</label><br>
+    <input type="text" class="details" id="postalCode" name="postalCode"><br>
 
     <button type="button" onclick="UserDetails.confirmDetails()"> confirmDetails </button>
     <button type="button" onclick="UserDetails.getDetails()"> getDetails </button>
 </div>
 
-<div class="addressInput">
-    <label for="country">Country:</label><br>
-    <input type="text" id="country" name="country"><br>
-
-    <label for="state">State:</label><br>
-    <input type="text" id="state" name="state"><br>
-
-    <label for="city">City:</label><br>
-    <input type="text" id="city" name="city"><br>
-
-    <label for="street">Street:</label><br>
-    <input type="text" id="street" name="street"><br>
-
-    <label for="postalCode">Postal Code:</label><br>
-    <input type="text" id="postalCode" name="postalCode"><br>
-
-    <button type="button" onclick="UserAddress.confirmAddress()"> change address </button>
-    <button type="button" onclick="UserAddress.getAddress()"> get address </button>
+<div class="shoppingCart">
+    <button type="button" onclick="ShoppingCart.getCart()"> get cart </button>
+    <button type="button" onclick="ShoppingCart.emptyCart()"> empty cart </button>
+    <button type="button" onclick="ShoppingCart.confirmCart()"> confirm cart </button>
 </div>
 
+<div class="orderHistory">
+    <button type="button" onclick="Order.getOrderHistory()"> get orderHistory </button>
+</div>
 
 </body>
 </html>
