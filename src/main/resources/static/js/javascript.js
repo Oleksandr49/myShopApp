@@ -74,7 +74,7 @@ class UserDetails {
             this.firstName = userDetails.firstName;
             this.secondName = userDetails.secondName;
             this.email = userDetails.email;
-            this.address = new Address(userDetails.address);
+            this.address = userDetails.address;
         }
         else {
             this.firstName = $('#firstName').val();
@@ -105,6 +105,9 @@ class UserDetails {
 
         displayDetails = function (details){
             details = new UserDetails(details);
+            if(details.address == null){
+                details.address = new Address();
+            }
             details.display();
         }
         request = new JSONRequest("GET", url, displayDetails);
@@ -329,7 +332,7 @@ class Order{
                 "Order creation date: "+order.created +"</br>"+
                 "Order total cost: "+order.totalCost + "</br>"+
                 "Progress: "+order.state +"</br>"+"</div>";
-            divID = ".order#" + order.id;
+            divID = "#"+order.id + ".order";
 
             $(".orderHistory").append(markup);
 
