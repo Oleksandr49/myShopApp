@@ -19,7 +19,9 @@ class JSONRequest {
             dataType:"json",
             success: function (responseText, responseStatus){
                 callback(responseText);
-                console.log(responseStatus);
+            },
+            error: function (xhr){
+                console.log("Status: " + xhr.status + " Description: " + xhr.responseText);
             }
         })
     }
@@ -64,6 +66,10 @@ class User{
         request = new JSONRequest("POST", url,authentication,customer.toString());
 
         request.send();
+    }
+
+    static logOut(){
+        localStorage.removeItem("Authorization");
     }
 }
 
@@ -171,7 +177,7 @@ class Product {
             }
         }
         request = new JSONRequest("GET", url, displayProducts);
-        console.log(JSON.stringify(request));
+
         request.send();
     }
 

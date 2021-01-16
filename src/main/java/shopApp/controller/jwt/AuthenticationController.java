@@ -1,14 +1,12 @@
 package shopApp.controller.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shopApp.model.jwt.AuthenticationRequest;
 import shopApp.model.jwt.AuthenticationResponse;
@@ -29,7 +27,6 @@ public class AuthenticationController {
 
 
     @PostMapping(value = "/authentication")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception{
         try {

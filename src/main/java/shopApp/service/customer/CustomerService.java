@@ -2,6 +2,7 @@ package shopApp.service.customer;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import shopApp.exceptions.DataException;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Cart;
@@ -10,7 +11,7 @@ import shopApp.model.user.customer.Details;
 
 public interface CustomerService {
 
-    void create (Customer customer);
+    void create (Customer customer) throws DataException;
 
     EntityModel<Details> readDetails(Long id);
     EntityModel<Details> updateDetails(Details details, Long id);

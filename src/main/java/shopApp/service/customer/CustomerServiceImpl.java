@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
+import shopApp.exceptions.DataException;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Cart;
@@ -31,7 +32,10 @@ public class CustomerServiceImpl implements CustomerService{
     OrderService orderService;
 
     @Override
-    public void create(Customer customer) {
+    public void create(Customer customer) throws DataException{
+        if(customerExists(customer)){
+            throw new DataException("Username already exists");
+        }
             userService.create(customer);
     }
 
@@ -104,6 +108,10 @@ public class CustomerServiceImpl implements CustomerService{
         Cart cart = customerRepository.getOne(customerId).getCart();
         cartService.removeItemFromCart(cart, itemId);
         return cartService.toModel(cart);
+    }
+
+    private Boolean customerExists(Customer customer){
+        return customerRepository.findUsersByUsername(customer.getUsername()) != null;
     }
 
 }

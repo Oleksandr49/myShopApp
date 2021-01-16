@@ -3,8 +3,8 @@ package shopApp.controller.customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import shopApp.exceptions.DataException;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Cart;
@@ -12,6 +12,8 @@ import shopApp.model.user.customer.Customer;
 import shopApp.model.user.customer.Details;
 import shopApp.service.customer.CustomerService;
 import shopApp.service.jwt.JwtService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/customers")
@@ -27,8 +29,7 @@ public class CustomerController {
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void create(@RequestBody Customer customer) {
+    public void create(@Valid @RequestBody Customer customer) throws DataException {
         customerService.create(customer);
     }
 
@@ -39,7 +40,6 @@ public class CustomerController {
     }
 
     @PutMapping("/details")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<Details>updateDetails(@RequestBody Details details, @RequestHeader(name = headerName)String header){
         return customerService.updateDetails(details, jwtService.getIdFromAuthHeader(header));
     }
@@ -50,19 +50,16 @@ public class CustomerController {
     }
 
     @PutMapping("/addresses")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public Address updateAddress(@RequestBody Address address, @RequestHeader(name = headerName)String header){
         return customerService.updateAddress(address, jwtService.getIdFromAuthHeader(header));
     }
 
     @PutMapping("/carts/{productId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<Cart> addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
         return customerService.addItemToCart(jwtService.getIdFromAuthHeader(header), productId);
     }
 
     @DeleteMapping("/carts/{itemId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<Cart> removeFromCart(@RequestHeader(name = headerName)String header, @PathVariable Long itemId) {
         return customerService.removeItemFromCart(jwtService.getIdFromAuthHeader(header), itemId);
     }
@@ -73,13 +70,11 @@ public class CustomerController {
     }
 
     @PostMapping("/carts")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<CustomerOrder> confirmCart(@RequestHeader(name = headerName)String header) {
         return customerService.CartToOrder(jwtService.getIdFromAuthHeader(header));
     }
 
     @DeleteMapping("/carts")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public EntityModel<Cart> emptyCart(@RequestHeader(name = headerName)String header) {
         return customerService.emptyCart(jwtService.getIdFromAuthHeader(header));
     }

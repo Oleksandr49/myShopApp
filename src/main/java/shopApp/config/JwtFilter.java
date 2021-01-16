@@ -1,12 +1,15 @@
 package shopApp.config;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import shopApp.service.jwt.JwtService;
 import shopApp.service.user.MyUserDetailsService;
 
@@ -18,6 +21,10 @@ import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    HandlerExceptionResolver exceptionResolver;
 
     @Autowired
     MyUserDetailsService myUserDetailsService;
@@ -33,7 +40,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(authorisationHeader != null && authorisationHeader.startsWith("Bearer ")){
             jwt = authorisationHeader.substring(7);
-            username = jwtService.extractUsername(jwt);
+            try{
+                username = jwtService.extractUsername(jwt);
+            }
+            catch (JwtException e){
+            exceptionResolver.resolveException(request, response, null, e);
+            }
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
