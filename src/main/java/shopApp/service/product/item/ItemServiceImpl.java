@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService{
         return item;
     }
 
-    private Double getPrice(Long productId){
+    private Integer getPrice(Long productId){
        return productService.getProduct(productId).getProductPrice();
     }
 

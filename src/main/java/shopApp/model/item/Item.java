@@ -16,6 +16,6 @@ public class Item {
     private Long id;
     private Long productId;
     private Integer amount;
-    private Double cost;
+    private Integer cost;
 
 }

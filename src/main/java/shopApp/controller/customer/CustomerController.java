@@ -40,7 +40,7 @@ public class CustomerController {
     }
 
     @PutMapping("/details")
-    public EntityModel<Details>updateDetails(@RequestBody Details details, @RequestHeader(name = headerName)String header){
+    public EntityModel<Details>updateDetails(@Valid@RequestBody Details details, @RequestHeader(name = headerName)String header){
         return customerService.updateDetails(details, jwtService.getIdFromAuthHeader(header));
     }
 
@@ -50,7 +50,7 @@ public class CustomerController {
     }
 
     @PutMapping("/addresses")
-    public Address updateAddress(@RequestBody Address address, @RequestHeader(name = headerName)String header){
+    public Address updateAddress(@Valid @RequestBody Address address, @RequestHeader(name = headerName)String header){
         return customerService.updateAddress(address, jwtService.getIdFromAuthHeader(header));
     }
 

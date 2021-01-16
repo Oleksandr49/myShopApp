@@ -161,7 +161,7 @@ class Product {
     constructor(product) {
         this.id = product.id;
         this.name = product.productName;
-        this.price = product.productPrice;
+        this.price = product.productPrice/100;
         this.selfLink = product._links.self.href;
         this.addToCartLink = product._links.addToCart.href;
     }
@@ -210,7 +210,7 @@ class Product {
 
 class ShoppingCart{
     constructor(cart) {
-        this.totalCost = cart.totalCost;
+        this.totalCost = cart.totalCost/100;
         this.cartItems = cart.cartItems;
         this.selfLink = cart._links.self.href;
         this.orderCartLink = cart._links.OrderCart.href;
@@ -234,7 +234,7 @@ class ShoppingCart{
                 markup = "<tr class='cartItem' id="+itemId+">" +
                     "<td> Product name: " + product.productId + "</td>" +
                     "<td> Product amount: " + product.amount +"</td>" +
-                    "<td> Product cost: " + product.cost + "</td>" +
+                    "<td> Product cost: " + product.cost/100 + "$" + "</td>" +
                          "</tr>";
                 $(table).append(markup);
                 tablePositionId = ".cartItem#" + itemId;
@@ -306,7 +306,7 @@ class Order{
     constructor(order) {
         this.id = order.orderId;
         this.created = order.created;
-        this.totalCost = order.totalCost;
+        this.totalCost = order.totalCost/100;
         this.state = order.orderState;
         this.items = order.orderItems;
     }
@@ -336,7 +336,7 @@ class Order{
             markup = "<div class='order' id="+order.id+">"+
                 "Order ID: "+order.id+"</br>"+
                 "Order creation date: "+order.created +"</br>"+
-                "Order total cost: "+order.totalCost + "</br>"+
+                "Order total cost: "+order.totalCost + "$" + "</br>"+
                 "Progress: "+order.state +"</br>"+"</div>";
             divID = "#"+order.id + ".order";
 
@@ -365,7 +365,7 @@ class Order{
                                 position = "<tr class='orderItem' id="+item.id+">" +
                                     "<td> Product name: " + item.productId + "</td>" +
                                     "<td> Product amount: " + item.amount +"</td>" +
-                                    "<td> Product cost: " + item.cost + "</td>" +
+                                    "<td> Product cost: " + item.cost/100 + "$" + "</td>" +
                                     "</tr>";
                                 positionID =  "#"+item.id+".orderItem";
 

@@ -1,4 +1,4 @@
-package shopApp.controller;
+package shopApp.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -23,14 +23,12 @@ public class ControllersExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        System.out.println(ex.getCause() + " " + ex.getMessage());
         return errors;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({Exception.class})
     public String handleDataExceptions(Exception ex) {
-        System.out.println(ex.getCause() + " " + ex.getMessage());
         return ex.getMessage();
     }
 
