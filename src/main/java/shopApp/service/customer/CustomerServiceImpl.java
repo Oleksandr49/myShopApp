@@ -1,6 +1,6 @@
 package shopApp.service.customer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import shopApp.service.customer.order.OrderService;
 import shopApp.service.user.UserService;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
 
     final private
@@ -26,15 +27,6 @@ public class CustomerServiceImpl implements CustomerService{
     final private DetailsService detailsService;
     final private CartService cartService;
     final private OrderService orderService;
-
-    @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository, UserService userService, DetailsService detailsService, CartService cartService, OrderService orderService) {
-        this.customerRepository = customerRepository;
-        this.userService = userService;
-        this.detailsService = detailsService;
-        this.cartService = cartService;
-        this.orderService = orderService;
-    }
 
     @Override
     public void create(Customer customer) throws DataException{

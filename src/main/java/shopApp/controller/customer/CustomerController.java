@@ -1,6 +1,6 @@
 package shopApp.controller.customer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +16,7 @@ import shopApp.service.jwt.JwtService;
 import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/customers")
 public class CustomerController {
 
@@ -24,13 +25,6 @@ public class CustomerController {
     final private CustomerService customerService;
 
     final private JwtService jwtService;
-
-    @Autowired
-    public CustomerController(CustomerService customerService, JwtService jwtService) {
-        this.customerService = customerService;
-        this.jwtService = jwtService;
-    }
-
 
     @PostMapping
     public void create(@Valid @RequestBody Customer customer) throws DataException {

@@ -1,6 +1,6 @@
 package shopApp.controller.paypal;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,14 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class PayPallController {
 
     private final PayPallClient payPalClient;
-
-    @Autowired
-    public PayPallController(PayPallClient payPalClient) {
-        this.payPalClient = payPalClient;
-    }
 
     @PostMapping("/payment/make")
     public Map<String, Object> makePayment(@RequestBody CustomerOrder customerOrder){

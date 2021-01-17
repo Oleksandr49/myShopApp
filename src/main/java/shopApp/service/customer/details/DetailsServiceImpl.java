@@ -1,6 +1,6 @@
 package shopApp.service.customer.details;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
@@ -13,14 +13,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@RequiredArgsConstructor
 public class DetailsServiceImpl implements DetailsService {
 
     final private DetailsRepository detailsRepository;
-
-    @Autowired
-    public DetailsServiceImpl(DetailsRepository detailsRepository) {
-        this.detailsRepository = detailsRepository;
-    }
 
     @Override
     public EntityModel<Details> updateDetails(Details newDetails, Long detailsId) {

@@ -1,6 +1,6 @@
 package shopApp.controller.products;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +9,10 @@ import shopApp.service.product.ProductService;
 
 
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
 
     final private ProductService productService;
-
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping("/products")
     public CollectionModel<EntityModel<Product>> readAll() {

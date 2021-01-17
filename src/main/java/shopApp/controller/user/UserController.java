@@ -1,6 +1,6 @@
 package shopApp.controller.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 import shopApp.model.user.User;
@@ -9,17 +9,12 @@ import shopApp.service.user.UserService;
 
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
     final private UserService userService;
 
     final private UserEntityModelAssembler userEntityModelAssembler;
-
-    @Autowired
-    public UserController(UserService userService, UserEntityModelAssembler userEntityModelAssembler) {
-        this.userService = userService;
-        this.userEntityModelAssembler = userEntityModelAssembler;
-    }
 
     @GetMapping("/users/{id}")
     public EntityModel<User> readUserById(@PathVariable Long id) {

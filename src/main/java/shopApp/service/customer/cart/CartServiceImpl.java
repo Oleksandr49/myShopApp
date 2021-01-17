@@ -1,6 +1,6 @@
 package shopApp.service.customer.cart;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
@@ -17,17 +17,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
 
     final private CartRepository cartRepository;
 
     final private ItemService itemService;
-
-    @Autowired
-    public CartServiceImpl(CartRepository cartRepository, ItemService itemService) {
-        this.cartRepository = cartRepository;
-        this.itemService = itemService;
-    }
 
     @Override
     public void emptyCart(Cart cart) {

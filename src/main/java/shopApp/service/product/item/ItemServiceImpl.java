@@ -1,6 +1,6 @@
 package shopApp.service.product.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
@@ -15,17 +15,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService{
 
     final private ItemRepository itemRepository;
 
     final private ProductService productService;
-
-    @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, ProductService productService) {
-        this.itemRepository = itemRepository;
-        this.productService = productService;
-    }
 
     @Override
     public void saveItem(Item item) {

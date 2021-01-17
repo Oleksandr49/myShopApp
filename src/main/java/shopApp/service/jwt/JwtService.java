@@ -4,7 +4,7 @@ package shopApp.service.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import shopApp.repository.UserRepository;
@@ -16,16 +16,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
+
 public class JwtService {
     private final byte[] SECRET_KEY = getEncryptedSecret();
     private static final String secret = "Some_very_long_message_for_better_security";
 
     final private UserRepository userRepository;
-
-    @Autowired
-    public JwtService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     private String createToken(Map<String, Object> claims, String subject, String userID){
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))

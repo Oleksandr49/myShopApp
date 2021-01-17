@@ -1,6 +1,6 @@
 package shopApp.service.customer.order;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -25,17 +25,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
 
     final private OrderRepository orderRepository;
 
     final private ItemService itemService;
-
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ItemService itemService) {
-        this.orderRepository = orderRepository;
-        this.itemService = itemService;
-    }
 
     @Override
     public CollectionModel<EntityModel<CustomerOrder>> getOrderHistory(Customer customer) {

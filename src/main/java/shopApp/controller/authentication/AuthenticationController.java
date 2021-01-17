@@ -1,6 +1,6 @@
 package shopApp.controller.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +14,7 @@ import shopApp.service.jwt.JwtService;
 import shopApp.service.user.MyUserDetailsService;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     final private MyUserDetailsService myUserDetailsService;
@@ -21,14 +22,6 @@ public class AuthenticationController {
     final private AuthenticationManager authenticationManager;
 
     final private JwtService jwtService;
-
-    @Autowired
-    public AuthenticationController(MyUserDetailsService myUserDetailsService, AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.myUserDetailsService = myUserDetailsService;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-    }
-
 
     @PostMapping(value = "/authentication")
     public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
