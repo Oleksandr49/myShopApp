@@ -20,13 +20,14 @@ public class JwtService {
     private final byte[] SECRET_KEY = getEncryptedSecret();
     private static final String secret = "Some_very_long_message_for_better_security";
 
-    @Autowired
-    JwtService jwtService;
+    final private UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    public JwtService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-     private String createToken(Map<String, Object> claims, String subject, String userID){
+    private String createToken(Map<String, Object> claims, String subject, String userID){
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .setId(userID)
@@ -66,7 +67,7 @@ public class JwtService {
     }
 
     public Long getIdFromAuthHeader(String authHeader){
-        String id = jwtService.extractClaim(authHeader.substring(7), Claims::getId);
+        String id = this.extractClaim(authHeader.substring(7), Claims::getId);
         return Long.parseLong(id);
     }
 

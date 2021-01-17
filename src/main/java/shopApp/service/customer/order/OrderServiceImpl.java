@@ -27,11 +27,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class OrderServiceImpl implements OrderService{
 
-    @Autowired
-    OrderRepository orderRepository;
+    final private OrderRepository orderRepository;
+
+    final private ItemService itemService;
 
     @Autowired
-    ItemService itemService;
+    public OrderServiceImpl(OrderRepository orderRepository, ItemService itemService) {
+        this.orderRepository = orderRepository;
+        this.itemService = itemService;
+    }
 
     @Override
     public CollectionModel<EntityModel<CustomerOrder>> getOrderHistory(Customer customer) {

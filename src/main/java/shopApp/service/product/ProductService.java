@@ -13,5 +13,4 @@ public interface ProductService extends RepresentationModelAssembler<Product, En
      EntityModel<Product> update (Product product, Long id);
      Product getProduct(Long id);
      Boolean delete (Long id);
-     Boolean validate(Product product);
 }

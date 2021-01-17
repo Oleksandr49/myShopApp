@@ -17,11 +17,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ItemServiceImpl implements ItemService{
 
-    @Autowired
-    ItemRepository itemRepository;
+    final private ItemRepository itemRepository;
+
+    final private ProductService productService;
 
     @Autowired
-    ProductService productService;
+    public ItemServiceImpl(ItemRepository itemRepository, ProductService productService) {
+        this.itemRepository = itemRepository;
+        this.productService = productService;
+    }
 
     @Override
     public void saveItem(Item item) {

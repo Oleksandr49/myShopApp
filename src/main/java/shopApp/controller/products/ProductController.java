@@ -11,8 +11,12 @@ import shopApp.service.product.ProductService;
 @RestController
 public class ProductController {
 
+    final private ProductService productService;
+
     @Autowired
-    ProductService productService;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/products")
     public CollectionModel<EntityModel<Product>> readAll() {

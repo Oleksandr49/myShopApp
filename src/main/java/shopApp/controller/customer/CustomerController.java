@@ -21,11 +21,15 @@ public class CustomerController {
 
     private final String headerName = "Authorization";
 
-    @Autowired
-    CustomerService customerService;
+    final private CustomerService customerService;
+
+    final private JwtService jwtService;
 
     @Autowired
-    JwtService jwtService;
+    public CustomerController(CustomerService customerService, JwtService jwtService) {
+        this.customerService = customerService;
+        this.jwtService = jwtService;
+    }
 
 
     @PostMapping

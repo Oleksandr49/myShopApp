@@ -13,8 +13,12 @@ import java.util.Map;
 @RestController
 public class PayPallController {
 
+    private final PayPallClient payPalClient;
+
     @Autowired
-    private PayPallClient payPalClient;
+    public PayPallController(PayPallClient payPalClient) {
+        this.payPalClient = payPalClient;
+    }
 
     @PostMapping("/payment/make")
     public Map<String, Object> makePayment(@RequestBody CustomerOrder customerOrder){

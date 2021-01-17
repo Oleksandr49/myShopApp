@@ -19,8 +19,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    final private ProductRepository productRepository;
+
     @Autowired
-    ProductRepository productRepository;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public CollectionModel<EntityModel<Product>>  readAllProducts() {
@@ -65,11 +69,6 @@ public class ProductServiceImpl implements ProductService {
         }
         productRepository.deleteById(id);
         return true;
-    }
-
-    @Override
-    public Boolean validate(Product product) {
-        return product.getProductPrice() != null & product.getProductName() != null;
     }
 
     @Override

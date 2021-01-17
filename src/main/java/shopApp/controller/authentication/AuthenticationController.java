@@ -16,14 +16,18 @@ import shopApp.service.user.MyUserDetailsService;
 @RestController
 public class AuthenticationController {
 
-    @Autowired
-    MyUserDetailsService myUserDetailsService;
+    final private MyUserDetailsService myUserDetailsService;
+
+    final private AuthenticationManager authenticationManager;
+
+    final private JwtService jwtService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    JwtService jwtService;
+    public AuthenticationController(MyUserDetailsService myUserDetailsService, AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.myUserDetailsService = myUserDetailsService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
 
     @PostMapping(value = "/authentication")

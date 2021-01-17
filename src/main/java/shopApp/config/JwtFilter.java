@@ -1,7 +1,6 @@
 package shopApp.config;
 
 import io.jsonwebtoken.JwtException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,15 +21,17 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    @Qualifier("handlerExceptionResolver")
-    HandlerExceptionResolver exceptionResolver;
+    final private HandlerExceptionResolver exceptionResolver;
 
-    @Autowired
-    MyUserDetailsService myUserDetailsService;
+    final private MyUserDetailsService myUserDetailsService;
 
-    @Autowired
-    JwtService jwtService;
+    final private JwtService jwtService;
+
+    public JwtFilter(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver, MyUserDetailsService myUserDetailsService, JwtService jwtService) {
+        this.exceptionResolver = exceptionResolver;
+        this.myUserDetailsService = myUserDetailsService;
+        this.jwtService = jwtService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

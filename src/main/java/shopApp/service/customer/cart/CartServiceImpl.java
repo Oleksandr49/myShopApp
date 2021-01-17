@@ -19,11 +19,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class CartServiceImpl implements CartService{
 
-    @Autowired
-    CartRepository cartRepository;
+    final private CartRepository cartRepository;
+
+    final private ItemService itemService;
 
     @Autowired
-    ItemService itemService;
+    public CartServiceImpl(CartRepository cartRepository, ItemService itemService) {
+        this.cartRepository = cartRepository;
+        this.itemService = itemService;
+    }
 
     @Override
     public void emptyCart(Cart cart) {

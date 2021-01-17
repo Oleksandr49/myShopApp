@@ -15,8 +15,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class DetailsServiceImpl implements DetailsService {
 
+    final private DetailsRepository detailsRepository;
+
     @Autowired
-    DetailsRepository detailsRepository;
+    public DetailsServiceImpl(DetailsRepository detailsRepository) {
+        this.detailsRepository = detailsRepository;
+    }
 
     @Override
     public EntityModel<Details> updateDetails(Details newDetails, Long detailsId) {

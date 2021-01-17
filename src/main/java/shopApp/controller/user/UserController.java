@@ -11,11 +11,15 @@ import shopApp.service.user.UserService;
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    final private UserService userService;
+
+    final private UserEntityModelAssembler userEntityModelAssembler;
 
     @Autowired
-    UserEntityModelAssembler userEntityModelAssembler;
+    public UserController(UserService userService, UserEntityModelAssembler userEntityModelAssembler) {
+        this.userService = userService;
+        this.userEntityModelAssembler = userEntityModelAssembler;
+    }
 
     @GetMapping("/users/{id}")
     public EntityModel<User> readUserById(@PathVariable Long id) {

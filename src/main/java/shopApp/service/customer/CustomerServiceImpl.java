@@ -19,17 +19,22 @@ import shopApp.service.user.UserService;
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
-    @Autowired
+    final private
     CustomerRepository customerRepository;
 
+    final private UserService userService;
+    final private DetailsService detailsService;
+    final private CartService cartService;
+    final private OrderService orderService;
+
     @Autowired
-    UserService userService;
-    @Autowired
-    DetailsService detailsService;
-    @Autowired
-    CartService cartService;
-    @Autowired
-    OrderService orderService;
+    public CustomerServiceImpl(CustomerRepository customerRepository, UserService userService, DetailsService detailsService, CartService cartService, OrderService orderService) {
+        this.customerRepository = customerRepository;
+        this.userService = userService;
+        this.detailsService = detailsService;
+        this.cartService = cartService;
+        this.orderService = orderService;
+    }
 
     @Override
     public void create(Customer customer) throws DataException{

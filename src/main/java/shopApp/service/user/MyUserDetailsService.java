@@ -13,8 +13,12 @@ import shopApp.repository.UserRepository;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
+    final private UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public MyUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
