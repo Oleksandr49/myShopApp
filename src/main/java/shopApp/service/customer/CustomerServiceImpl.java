@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
-import shopApp.exceptions.DataException;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Cart;
@@ -20,18 +19,16 @@ import shopApp.service.user.UserService;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
 
-    final private
-    CustomerRepository customerRepository;
-
+    final private CustomerRepository customerRepository;
     final private UserService userService;
     final private DetailsService detailsService;
     final private CartService cartService;
     final private OrderService orderService;
 
     @Override
-    public void create(Customer customer) throws DataException{
+    public void create(Customer customer) throws DataBaseException {
         if(customerExists(customer)){
-            throw new DataException("Username already exists");
+            throw new DataBaseException("Username already exists");
         }
             userService.create(customer);
     }

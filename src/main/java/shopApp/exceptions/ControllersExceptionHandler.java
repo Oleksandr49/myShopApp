@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.PersistenceException;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class ControllersExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({Exception.class})
-    public String handleDataExceptions(Exception ex) {
+    @ExceptionHandler({PersistenceException.class})
+    public String handleDataBaseExceptions(PersistenceException ex) {
         return ex.getMessage();
     }
 

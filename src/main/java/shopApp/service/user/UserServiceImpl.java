@@ -7,6 +7,8 @@ import shopApp.model.user.User;
 import shopApp.model.user.customer.Customer;
 import shopApp.repository.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -36,12 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean delete(Long id) {
+    public void delete(Long id) {
         if(!userRepository.existsById(id)){
-            return false;
+            throw new EntityNotFoundException("No Such User");
         }
         userRepository.deleteById(id);
-        return true;
     }
 
     @Override
