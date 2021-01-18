@@ -17,7 +17,6 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-
 public class JwtService {
     private final byte[] SECRET_KEY = getEncryptedSecret();
     private static final String secret = "Some_very_long_message_for_better_security";
