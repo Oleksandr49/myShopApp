@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
-import shopApp.exceptions.DataException;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Cart;
@@ -27,7 +26,7 @@ public class CustomerController {
     final private JwtService jwtService;
 
     @PostMapping
-    public void create(@Valid @RequestBody Customer customer) throws DataException {
+    public void create(@Valid @RequestBody Customer customer) throws DataBaseException {
         customerService.create(customer);
     }
 

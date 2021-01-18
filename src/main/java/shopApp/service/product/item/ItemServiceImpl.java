@@ -1,18 +1,14 @@
 package shopApp.service.product.item;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
-import shopApp.controller.customer.CustomerController;
 import shopApp.model.item.CartItem;
 import shopApp.model.item.Item;
 import shopApp.model.user.customer.Cart;
 import shopApp.repository.ItemRepository;
 import shopApp.service.product.ProductService;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +25,9 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public void delete(Long id) {
+        if(!itemRepository.existsById(id)){
+            throw new EntityNotFoundException("No Such Item");
+        }
         itemRepository.deleteById(id);
     }
 
@@ -48,13 +47,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     private Integer getPrice(Long productId){
-       return productService.getProduct(productId).getProductPrice();
+       return productService.read(productId).getProductPrice();
     }
 
-    @Override
-    public EntityModel<Item> toModel(Item entity) {
-        return EntityModel.of(entity,
-                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readShoppingCart("")).withRel("Cart"),
-                linkTo(methodOn(CustomerController.class).removeFromCart("", entity.getId())).withRel("removeFromCart"));
-    }
 }

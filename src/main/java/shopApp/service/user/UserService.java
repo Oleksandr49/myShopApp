@@ -9,6 +9,6 @@ public interface UserService {
      void create (Customer customer);
 
      User read (Long id);
-     Boolean delete (Long id);
+     void delete (Long id);
      User update (User user, Long id);
 }
