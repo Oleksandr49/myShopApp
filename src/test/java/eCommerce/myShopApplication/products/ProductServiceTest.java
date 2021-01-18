@@ -12,9 +12,12 @@ import shopApp.repository.ProductRepository;
 import shopApp.service.product.ProductService;
 import shopApp.service.product.ProductServiceImpl;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,13 +50,17 @@ public class ProductServiceTest {
         Product product = new Product();
         product.setProductPrice(20);
         product.setProductName("some");
-        when(productService.create(product)).thenReturn(productService.toModel(product));
-        Assert.assertEquals(productService.create(product));
+        when(productService.create(product)).thenReturn(product);
+        Assert.assertEquals(productService.create(product), product);
     }
     @Test
     public void readAllProductsCorrect() {
-
+        Exception exception = assertThrows(EntityNotFoundException.class, productService::readAllProducts);
+            String expectedMessage = "No Products in database";
+            String actualMessage = exception.getMessage();
+            assertTrue(actualMessage.contains(expectedMessage));
     }
+
     @Test
     public void readProductCorrect() {
 

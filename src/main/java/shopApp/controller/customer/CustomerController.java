@@ -12,6 +12,7 @@ import shopApp.model.user.customer.Details;
 import shopApp.service.customer.CustomerService;
 import shopApp.service.jwt.JwtService;
 
+import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
 @RestController
@@ -26,7 +27,7 @@ public class CustomerController {
     final private JwtService jwtService;
 
     @PostMapping
-    public void create(@Valid @RequestBody Customer customer) throws DataBaseException {
+    public void create(@Valid @RequestBody Customer customer) throws PersistenceException {
         customerService.create(customer);
     }
 

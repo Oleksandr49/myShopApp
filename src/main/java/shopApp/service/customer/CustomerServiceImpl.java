@@ -15,6 +15,8 @@ import shopApp.service.customer.details.DetailsService;
 import shopApp.service.customer.order.OrderService;
 import shopApp.service.user.UserService;
 
+import javax.persistence.EntityExistsException;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
@@ -26,9 +28,9 @@ public class CustomerServiceImpl implements CustomerService{
     final private OrderService orderService;
 
     @Override
-    public void create(Customer customer) throws DataBaseException {
+    public void create(Customer customer) throws EntityExistsException {
         if(customerExists(customer)){
-            throw new DataBaseException("Username already exists");
+            throw new EntityExistsException("Username already exists");
         }
             userService.create(customer);
     }

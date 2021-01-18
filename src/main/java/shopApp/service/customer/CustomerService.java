@@ -8,9 +8,11 @@ import shopApp.model.user.customer.Cart;
 import shopApp.model.user.customer.Customer;
 import shopApp.model.user.customer.Details;
 
+import javax.persistence.EntityExistsException;
+
 public interface CustomerService {
 
-    void create (Customer customer) throws DataBaseException;
+    void create (Customer customer) throws EntityExistsException;
 
     EntityModel<Details> readDetails(Long id);
     EntityModel<Details> updateDetails(Details details, Long id);
