@@ -4,6 +4,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
 import shopApp.controller.customer.CustomerController;
 import shopApp.controller.products.ProductController;
 import shopApp.model.product.Product;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Component
 public class ProductWrapper implements RepresentationModelAssembler<Product, EntityModel<Product>> {
 
     @Override

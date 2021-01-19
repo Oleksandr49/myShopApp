@@ -1,10 +1,12 @@
 package shopApp.service.product;
 
+import org.springframework.stereotype.Service;
 import shopApp.model.product.Product;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
 
+@Service
 public interface ProductService {
 
      List<Product> readAllProducts() throws PersistenceException;
