@@ -31,27 +31,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product read(Long id) {
-        return productRepository.getOne(id);
+        return productRepository.findById(id)
+                .orElseThrow();
     }
 
     @Override
     public Product update (Product newProduct, Long id){
+        if(isInvalid(newProduct)) throw new IllegalArgumentException("Entity is invalid");
         return productRepository.findById(id)
        .map(product -> {
-           product.setProductName(newProduct.getProductName());
-           product.setProductPrice(newProduct.getProductPrice());
-           return productRepository.save(product);
+               product.setProductName(newProduct.getProductName());
+               product.setProductPrice(newProduct.getProductPrice());
+               return productRepository.save(product);
        })
        .orElseThrow();
     }
 
     @Override
-    public Product delete(Long id) {
+    public void delete(Long id) {
         if(!productRepository.existsById(id)){
            throw new EntityNotFoundException("No Such Product");
         }
-        Product product = productRepository.getOne(id);
         productRepository.deleteById(id);
-        return product;
+    }
+
+    private Boolean isInvalid(Product product){
+        return product.getProductName().isBlank() || product.getProductPrice() == null || product.getProductPrice() <= 0;
     }
 }

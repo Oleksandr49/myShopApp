@@ -13,5 +13,5 @@ public interface ProductService {
      Product create (Product product);
      Product read (Long id);
      Product update (Product product, Long id);
-     Product delete (Long id);
+     void delete (Long id);
 }
