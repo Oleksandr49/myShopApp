@@ -11,6 +11,7 @@ import javax.persistence.PersistenceException;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ControllersExceptionHandler {
@@ -29,13 +30,19 @@ public class ControllersExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({PersistenceException.class})
-    public String handleDataBaseExceptions(PersistenceException ex) {
+    public String handlePersistenceExceptions(PersistenceException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
+    public String handleNoOrWrongElementExceptions(RuntimeException ex) {
         return ex.getMessage();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({AccessDeniedException.class})
-    public String handleJWTExceptions(AccessDeniedException ex) {
+    public String handleAccessDeniedExceptions(AccessDeniedException ex) {
         return ex.getMessage();
     }
 }
