@@ -19,8 +19,8 @@ public class ItemServiceImpl implements ItemService{
     final private ProductService productService;
 
     @Override
-    public void saveItem(Item item) {
-        itemRepository.save(item);
+    public Item saveItem(Item item) {
+       return itemRepository.save(item);
     }
 
     @Override
@@ -32,10 +32,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void addItemToCart(Cart cart, Long productId) {
+    public CartItem addItemToCart(Cart cart, Long productId) {
         CartItem cartItem = (CartItem) createCartItem(productId);
         cartItem.setCart(cart);
         saveItem(cartItem);
+        return cartItem;
     }
 
     private Item createCartItem(Long productId) {

@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
+    @Override
     public Boolean isInvalid(Product product){
         return product.getProductName() == null || product.getProductPrice() == null || product.getProductPrice() <= 0 || product.getProductName().isBlank();
     }
