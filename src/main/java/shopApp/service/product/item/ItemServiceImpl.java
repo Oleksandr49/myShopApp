@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shopApp.model.item.CartItem;
 import shopApp.model.item.Item;
-import shopApp.model.user.customer.Cart;
+import shopApp.model.product.Product;
 import shopApp.repository.ItemRepository;
-import shopApp.service.product.ProductService;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -15,8 +14,6 @@ import javax.persistence.EntityNotFoundException;
 public class ItemServiceImpl implements ItemService{
 
     final private ItemRepository itemRepository;
-
-    final private ProductService productService;
 
     @Override
     public Item saveItem(Item item) {
@@ -32,23 +29,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public CartItem addItemToCart(Cart cart, Long productId) {
-        CartItem cartItem = (CartItem) createCartItem(productId);
-        cartItem.setCart(cart);
-        saveItem(cartItem);
+    public CartItem createCartItem(Product product) {
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(product);
+        cartItem.setAmount(1);
+        cartItem.setCost(cartItem.getAmount() * product.getProductPrice());
         return cartItem;
     }
-
-    private Item createCartItem(Long productId) {
-        Item item = new CartItem();
-        item.setProductId(productId);
-        item.setAmount(1);
-        item.setCost(item.getAmount() * getPrice(productId));
-        return item;
-    }
-
-    private Integer getPrice(Long productId){
-       return productService.read(productId).getProductPrice();
-    }
-
 }

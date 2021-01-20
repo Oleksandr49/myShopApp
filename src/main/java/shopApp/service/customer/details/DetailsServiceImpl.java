@@ -1,72 +1,58 @@
 package shopApp.service.customer.details;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
-import shopApp.controller.customer.CustomerController;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Details;
 import shopApp.repository.DetailsRepository;
+import shopApp.service.customer.CustomerService;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DetailsServiceImpl implements DetailsService {
 
     final private DetailsRepository detailsRepository;
+    final private CustomerService customerService;
 
     @Override
-    public EntityModel<Details> updateDetails(Details newDetails, Long detailsId) {
-        Details details = detailsRepository.getOne(detailsId);
-        setNewDetails(details, newDetails);
-        detailsRepository.save(details);
-        return toModel(details);
+    public Details readDetails(Long customerId) {
+        return customerService.getCustomer(customerId).getDetails();
     }
 
     @Override
-    public Address updateAddress(Address newAddress, Long detailsId) {
-        Details details = detailsRepository.getOne(detailsId);
-        if(haveAddress(details)){
-            setNewAddress(details.getAddress(), newAddress);
-        }
-        else {
-            details.setAddress(newAddress);
-        }
-        detailsRepository.save(details);
-        return details.getAddress();
+    public Details updateDetails(Long customerId, Details newDetails) {
+        Long detailsId = readDetails(customerId).getId();
+        return detailsRepository.findById(detailsId)
+                .map(details -> {
+                    details.setEmail(newDetails.getEmail());
+                    details.setFirstName(newDetails.getFirstName());
+                    details.setSecondName(newDetails.getSecondName());
+                    details.setIsMale(newDetails.getIsMale());
+                    details.setAddress(newDetails.getAddress());
+                    return detailsRepository.save(details);
+                }).orElseThrow();
     }
 
     @Override
-    public EntityModel<Details> toModel(Details entity) {
-        return EntityModel.of(entity,
-                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readDetails("")).withSelfRel(),
-                linkTo(methodOn(CustomerController.class).readAddress("")).withRel("Address"),
-                linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"));
+    public Optional<Address> readAddress(Long customerId) {
+        return Optional.ofNullable(readDetails(customerId).getAddress());
     }
 
-
-    private void setNewDetails(Details details, Details newDetails){
-        details.setEmail(newDetails.getEmail());
-        details.setFirstName(newDetails.getFirstName());
-        details.setSecondName(newDetails.getSecondName());
-        details.setIsMale(newDetails.getIsMale());
-        details.setAddress(newDetails.getAddress());
+    @Override
+    public Address updateAddress(Long customerId, Address newAddress) {
+        return readAddress(customerId)
+                .map(address -> {
+                    address.setCity(newAddress.getCity());
+                    address.setCountry(newAddress.getCountry());
+                    address.setState(newAddress.getState());
+                    address.setStreet(newAddress.getStreet());
+                    address.setPostalCode(newAddress.getPostalCode());
+                    Details details = readDetails(customerId);
+                    details.setAddress(address);
+                    detailsRepository.save(details);
+                    return address;
+                }).orElseThrow();
     }
-
-    private void setNewAddress(Address address, Address newAddress){
-        address.setCity(newAddress.getCity());
-        address.setCountry(newAddress.getCountry());
-        address.setState(newAddress.getState());
-        address.setStreet(newAddress.getStreet());
-        address.setPostalCode(newAddress.getPostalCode());
-    }
-
-    private Boolean haveAddress(Details details){
-        return details.getAddress() != null;
-    }
-
-
 }

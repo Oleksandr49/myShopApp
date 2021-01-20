@@ -1,15 +1,14 @@
 package shopApp.service.customer.details;
 
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import shopApp.model.user.customer.Address;
 import shopApp.model.user.customer.Details;
 
-public interface DetailsService extends RepresentationModelAssembler<Details, EntityModel<Details>> {
+import java.util.Optional;
 
-    EntityModel<Details> updateDetails(Details newDetails, Long detailsId);
+public interface DetailsService {
 
-    Address updateAddress (Address newAddress, Long detailsId);
-
-
+    Details readDetails(Long customerId);
+    Details updateDetails(Long customerId, Details newDetails);
+    Optional<Address> readAddress(Long customerId);
+    Address updateAddress(Long customerId, Address newAddress);
 }

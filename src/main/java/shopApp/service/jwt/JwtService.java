@@ -62,7 +62,7 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public Long getIdFromAuthHeader(String authHeader){
+    public Long getCustomerIdFromAuthHeader(String authHeader){
         String id = this.extractClaim(authHeader.substring(7), Claims::getId);
         return Long.parseLong(id);
     }

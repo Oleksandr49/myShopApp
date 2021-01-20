@@ -2,11 +2,9 @@ package shopApp.model.item;
 
 
 import lombok.Data;
+import shopApp.model.product.Product;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -17,7 +15,8 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    private Long productId;
+    @Transient
+    private Product product;
     @Min(0)
     @NotNull
     private Integer amount;

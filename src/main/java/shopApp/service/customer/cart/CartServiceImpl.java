@@ -1,20 +1,17 @@
 package shopApp.service.customer.cart;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
-import shopApp.controller.customer.CustomerController;
 import shopApp.model.item.CartItem;
 import shopApp.model.item.Item;
+import shopApp.model.product.Product;
 import shopApp.model.user.customer.Cart;
 import shopApp.repository.CartRepository;
+import shopApp.service.customer.CustomerService;
+import shopApp.service.product.ProductService;
 import shopApp.service.product.item.ItemService;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
@@ -22,37 +19,42 @@ public class CartServiceImpl implements CartService{
 
     final private CartRepository cartRepository;
 
+    final private CustomerService customerService;
     final private ItemService itemService;
+    final private ProductService productService;
 
     @Override
-    public void emptyCart(Cart cart) {
+    public Cart readCart(Long customerId){
+        return cartRepository.findById(customerService.getCustomer(customerId).getCart().getId())
+                .orElseThrow();
+    }
+
+    @Override
+    public void emptyCart(Long customerId) {
+        Cart cart = readCart(customerId);
         deleteCartItems(cart.getCartItems());
         cart.getCartItems().clear();
         updateCartTotal(cart);
     }
 
     @Override
-    public void addItemToCart(Cart cart, Long productId) {
-        itemService.addItemToCart(cart, productId);
+    public void addItemToCart(Long customerId, Long productId) {
+        Cart cart = readCart(customerId);
+        Product product = productService.read(productId);
+        CartItem cartItem = itemService.createCartItem(product);
+        cartItem.setCart(cart);
+        itemService.saveItem(cartItem);
         updateCartTotal(cart);
     }
 
     @Override
-    public void removeItemFromCart(Cart cart, Long itemId) {
+    public void removeItemFromCart(Long customerId, Long itemId) {
         itemService.delete(itemId);
-        updateCartTotal(cart);
-    }
-
-    @Override
-    public EntityModel<Cart> toModel(Cart entity) {
-        return EntityModel.of(entity,
-                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readShoppingCart("")).withSelfRel(),
-                linkTo(methodOn(CustomerController.class).confirmCart("")).withRel("OrderCart"),
-                linkTo(methodOn(CustomerController.class).emptyCart("")).withRel("EmptyCart"));
+        updateCartTotal(readCart(customerId));
     }
 
     private void updateCartTotal(Cart cart){
-        cart.setTotalCost(calculateCartItems(cart));
+        cart.setTotalCost(calculateCartTotal(cart));
         cartRepository.save(cart);
     }
 
@@ -62,8 +64,8 @@ public class CartServiceImpl implements CartService{
         }
     }
 
-    private Double calculateCartItems(Cart cart){
-        Double totalCost = 0.00;
+    private Integer calculateCartTotal(Cart cart){
+        Integer totalCost = 0;
         for(Item item : cart.getCartItems()){
             totalCost += item.getCost();
         }

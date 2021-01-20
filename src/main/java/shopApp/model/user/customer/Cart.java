@@ -15,7 +15,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private Long id;
-    private Double totalCost = 0.00;
+    private Integer totalCost = 0;
     @OneToMany(mappedBy = "cart")
     private final List<CartItem> cartItems = new ArrayList<>();
 }
