@@ -29,12 +29,17 @@ public class CartController {
         cartService.emptyCart(jwtService.getCustomerIdFromAuthHeader(header));
     }
 
-    @PutMapping
+    @PutMapping("/{productId}")
     public void addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
-       cartService.addItemToCart(jwtService.getCustomerIdFromAuthHeader(header), productId);
+       cartService.addProductToCart(jwtService.getCustomerIdFromAuthHeader(header), productId);
     }
 
-    @DeleteMapping
+    @PutMapping("/{itemId}/{amount}")
+    public void changeItemAmount(@RequestHeader(name = headerName)String header, @PathVariable Long itemId, @PathVariable Integer amount) {
+        cartService.changeItemAmount(jwtService.getCustomerIdFromAuthHeader(header), itemId, amount);
+    }
+
+    @DeleteMapping("/{itemId}")
     public void removeFromCart(@RequestHeader(name = headerName)String header, @PathVariable Long itemId) {
          cartService.removeItemFromCart(jwtService.getCustomerIdFromAuthHeader(header), itemId);
     }

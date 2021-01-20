@@ -11,6 +11,7 @@ import shopApp.service.customer.CustomerService;
 import shopApp.service.product.ProductService;
 import shopApp.service.product.item.ItemService;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 
 @Service
@@ -32,43 +33,65 @@ public class CartServiceImpl implements CartService{
     @Override
     public void emptyCart(Long customerId) {
         Cart cart = readCart(customerId);
-        deleteCartItems(cart.getCartItems());
+        deleteAllCartItems(cart.getCartItems());
         cart.getCartItems().clear();
-        updateCartTotal(cart);
+        updateCartTotal(customerId);
     }
 
     @Override
-    public void addItemToCart(Long customerId, Long productId) {
+    public void addProductToCart(Long customerId, Long productId) {
         Cart cart = readCart(customerId);
         Product product = productService.read(productId);
-        CartItem cartItem = itemService.createCartItem(product);
-        cartItem.setCart(cart);
-        itemService.saveItem(cartItem);
-        updateCartTotal(cart);
+        if(isProductInCart(cart, product)) throw new EntityExistsException("Product already in cart");
+        createAndAddItemToCart(customerId, product);
+    }
+
+    @Override
+    public void changeItemAmount(Long customerId, Long itemId, Integer amount){
+        itemService.changeItemAmount(itemId, amount);
+        updateCartTotal(customerId);
     }
 
     @Override
     public void removeItemFromCart(Long customerId, Long itemId) {
         itemService.delete(itemId);
-        updateCartTotal(readCart(customerId));
+        updateCartTotal(customerId);
     }
 
-    private void updateCartTotal(Cart cart){
-        cart.setTotalCost(calculateCartTotal(cart));
+    private Boolean isProductInCart(Cart cart, Product product){
+        for(CartItem cartItem : cart.getCartItems()){
+            if(cartItem.getProduct().getId().equals(product.getId())) return true;
+        }
+        return false;
+    }
+
+    private void createAndAddItemToCart(Long customerId, Product product){
+        Cart cart = readCart(customerId);
+        CartItem cartItem = itemService.createCartItem(product);
+        cartItem.setCart(cart);
+        cart.getCartItems().add(cartItem);
+        itemService.saveItem(cartItem);
+        updateCartTotal(customerId);
+    }
+
+    @Override
+    public void updateCartTotal(Long customerId){
+        Cart cart = readCart(customerId);
+        cart.setTotalCost(calculateCartTotalCost(cart));
         cartRepository.save(cart);
     }
-
-    private void deleteCartItems(List<CartItem> cartItems){
-        for (CartItem cartItem : cartItems){
-            itemService.delete(cartItem.getId());
-        }
-    }
-
-    private Integer calculateCartTotal(Cart cart){
+    @Override
+    public Integer calculateCartTotalCost(Cart cart){
         Integer totalCost = 0;
         for(Item item : cart.getCartItems()){
             totalCost += item.getCost();
         }
         return totalCost;
+    }
+
+    private void deleteAllCartItems(List<CartItem> cartItems){
+        for (CartItem cartItem : cartItems){
+            itemService.delete(cartItem.getId());
+        }
     }
 }

@@ -16,6 +16,11 @@ public class ItemServiceImpl implements ItemService{
     final private ItemRepository itemRepository;
 
     @Override
+    public Item getItem(Long itemId){
+        return itemRepository.findById(itemId).orElseThrow();
+    }
+
+    @Override
     public Item saveItem(Item item) {
        return itemRepository.save(item);
     }
@@ -35,5 +40,12 @@ public class ItemServiceImpl implements ItemService{
         cartItem.setAmount(1);
         cartItem.setCost(cartItem.getAmount() * product.getProductPrice());
         return cartItem;
+    }
+
+    @Override
+    public void changeItemAmount(Long itemId, Integer newAmount) {
+        Item item = getItem(itemId);
+        item.setAmount(newAmount);
+        saveItem(item);
     }
 }

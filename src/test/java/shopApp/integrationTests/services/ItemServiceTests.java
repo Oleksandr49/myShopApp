@@ -15,7 +15,6 @@ import shopApp.model.user.customer.Cart;
 import shopApp.repository.ItemRepository;
 import shopApp.service.product.ProductService;
 import shopApp.service.product.item.ItemService;
-import shopApp.service.product.item.ItemServiceImpl;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
@@ -37,7 +36,7 @@ public class ItemServiceTests {
 
     @BeforeEach
     public void initService(){
-        itemService = new ItemServiceImpl(itemRepository, productService);
+       // itemService = new ItemServiceImpl(itemRepository, productService);
     }
 
     @Test
@@ -45,7 +44,6 @@ public class ItemServiceTests {
         Item item = new Item();
         item.setAmount(2);
         item.setCost(100);
-        item.setProductId(5L);
         assertEquals(item, itemService.saveItem(item));
     }
 

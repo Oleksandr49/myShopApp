@@ -17,7 +17,7 @@ public class CustomerOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private LocalDateTime created;
-    private Double totalCost;
+    private Integer totalCost;
     private OrderState orderState;
 
     @ManyToOne

@@ -32,12 +32,12 @@ public class DetailsController {
         return detailsWrapper.toModel(detailsService.updateDetails(jwtService.getCustomerIdFromAuthHeader(header), details));
     }
 
-    @GetMapping
+    @GetMapping("/addresses")
     public Address readAddress(@RequestHeader(name = headerName)String header) {
         return detailsService.readAddress(jwtService.getCustomerIdFromAuthHeader(header)).orElseThrow();
     }
 
-    @PutMapping
+    @PutMapping("/addresses")
     public Address updateAddress(@Valid @RequestBody Address address, @RequestHeader(name = headerName)String header){
         return detailsService.updateAddress(jwtService.getCustomerIdFromAuthHeader(header), address);
     }

@@ -1,28 +1,22 @@
 package shopApp.service.customer.order;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
-import shopApp.controller.customer.CustomerController;
-import shopApp.controller.paypal.PayPallController;
-import shopApp.controller.products.ProductController;
 import shopApp.model.item.CartItem;
 import shopApp.model.item.OrderItem;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.order.OrderState;
 import shopApp.model.user.customer.Cart;
-import shopApp.model.user.customer.Customer;
+import shopApp.model.user.customer.Details;
 import shopApp.repository.OrderRepository;
+import shopApp.service.customer.CustomerService;
+import shopApp.service.customer.cart.CartService;
 import shopApp.service.product.item.ItemService;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
@@ -31,49 +25,58 @@ public class OrderServiceImpl implements OrderService{
     final private OrderRepository orderRepository;
 
     final private ItemService itemService;
+    final private CustomerService customerService;
+    final private CartService cartService;
+
 
     @Override
-    public CollectionModel<EntityModel<CustomerOrder>> getOrderHistory(Customer customer) {
-        return toEntityCollection(customer.getDetails().getOrderHistory());
+    public CustomerOrder readOrder(Long customerId, Long orderId) {
+        return findOrder(getOrderHistory(customerId), orderId);
     }
 
     @Override
-    public EntityModel<CustomerOrder> assembleOrder(Customer customer) {
-        CustomerOrder customerOrder = createOrder();
-        customerOrder.setTotalCost(customer.getCart().getTotalCost());
-        customerOrder.setDetails(customer.getDetails());
+    public List<CustomerOrder> getOrderHistory(Long customerId) {
+        return customerService.getCustomer(customerId).getDetails().getOrderHistory();
+    }
+
+    @Override
+    public CustomerOrder orderCart(Long customerId) {
+        Details details = customerService.getCustomer(customerId).getDetails();
+        return assembleOrderForCartItems(customerId, details);
+    }
+
+    private CustomerOrder assembleOrderForCartItems(Long customerId, Details details) {
+        Cart cart = cartService.readCart(customerId);
+        CustomerOrder customerOrder = createOrder(details);
+        customerOrder.setTotalCost(cartService.calculateCartTotalCost(cart));
         orderRepository.save(customerOrder);
-        transferItems(customer.getCart(), customerOrder);
-        return toModel(customerOrder);
+        convertItems(cart, customerOrder);
+        cartService.updateCartTotal(customerId);
+        return customerOrder;
     }
 
-    @Override
-    public EntityModel<CustomerOrder> readOrder(Customer customer, Long orderId) {
-            List<CustomerOrder> orderHistory = customer.getDetails().getOrderHistory();
-            return toModel(findOrder(orderHistory, orderId));
-    }
-
-    @Override
-    public EntityModel<CustomerOrder> toModel(CustomerOrder entity) {
-
-        return EntityModel.of(entity,
-                WebMvcLinkBuilder.linkTo(methodOn(CustomerController.class).readOrder("", entity.getOrderId())).withSelfRel(),
-                linkTo(methodOn(CustomerController.class).readOrderHistory("")).withRel("OrderHistory"),
-                WebMvcLinkBuilder.linkTo(methodOn(PayPallController.class).makePayment(entity)).withRel("Payment"));
-    }
-
-
-
-    private CollectionModel<EntityModel<CustomerOrder>> toEntityCollection(List <CustomerOrder> orders){
-        List<EntityModel<CustomerOrder>> orderHistory = orders.stream().map(this::toModel).collect(Collectors.toList());
-        return CollectionModel.of(orderHistory, WebMvcLinkBuilder.linkTo(methodOn(ProductController.class).readAll()).withSelfRel());
-    }
-
-    private CustomerOrder createOrder(){
+    private CustomerOrder createOrder(Details details){
         CustomerOrder customerOrder = new CustomerOrder();
         customerOrder.setCreated(LocalDateTime.now());
         customerOrder.setOrderState(OrderState.STATE);
+        customerOrder.setDetails(details);
         return customerOrder;
+    }
+
+    private void convertItems(Cart cart, CustomerOrder customerOrder){
+        for(CartItem cartItem : cart.getCartItems()){
+            convertCartItemToOrderItem(cartItem, customerOrder);
+        }
+    }
+
+    private void convertCartItemToOrderItem(CartItem cartItem, CustomerOrder customerOrder){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setCustomerOrder(customerOrder);
+        orderItem.setProduct(cartItem.getProduct());
+        orderItem.setAmount(cartItem.getAmount());
+        orderItem.setCost(cartItem.getCost());
+        itemService.saveItem(orderItem);
+        itemService.delete(cartItem.getId());
     }
 
     private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){
@@ -82,20 +85,7 @@ public class OrderServiceImpl implements OrderService{
                 return order;
             }
         }
-        return null;
-    }
-
-    private void transferItems(Cart cart, CustomerOrder customerOrder){
-        for(CartItem cartItem : cart.getCartItems()){
-            OrderItem orderItem = new OrderItem();
-            orderItem.setCustomerOrder(customerOrder);
-            orderItem.setProductId(cartItem.getProductId());
-            orderItem.setAmount(cartItem.getAmount());
-            orderItem.setId(cartItem.getId());
-            orderItem.setCost(cartItem.getCost());
-            customerOrder.getOrderItems().add(orderItem);
-            itemService.saveItem(orderItem);
-        }
+        throw new EntityNotFoundException("No such Order");
     }
 
 

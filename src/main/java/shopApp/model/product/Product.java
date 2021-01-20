@@ -1,14 +1,14 @@
 package shopApp.model.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import shopApp.model.item.Item;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,4 +21,7 @@ public class Product {
     @NotNull
     @Min(0)
     private Integer productPrice;
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<Item> item;
 }

@@ -6,6 +6,10 @@ public interface CartService {
 
     Cart readCart(Long customerId);
     void emptyCart(Long customerId);
-    void addItemToCart(Long customerId, Long productId);
+    void addProductToCart(Long customerId, Long productId);
+    void changeItemAmount(Long customerId, Long itemId, Integer amount);
     void removeItemFromCart(Long customerId, Long productId);
+    void updateCartTotal(Long customerId);
+
+    Integer calculateCartTotalCost(Cart cart);
 }
