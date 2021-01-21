@@ -7,6 +7,7 @@ import shopApp.model.item.OrderItem;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.order.OrderState;
 import shopApp.model.user.customer.Cart;
+import shopApp.model.user.customer.Customer;
 import shopApp.model.user.customer.Details;
 import shopApp.repository.OrderRepository;
 import shopApp.service.customer.CustomerService;
@@ -41,17 +42,18 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public CustomerOrder orderCart(Long customerId) {
-        Details details = customerService.getCustomer(customerId).getDetails();
-        return assembleOrderForCartItems(customerId, details);
+        Customer customer = customerService.getCustomer(customerId);
+        return assembleOrderForCartItems(customer);
     }
 
-    private CustomerOrder assembleOrderForCartItems(Long customerId, Details details) {
-        Cart cart = cartService.readCart(customerId);
+    private CustomerOrder assembleOrderForCartItems(Customer customer) {
+        Cart cart = customer.getCart();
+        Details details = customer.getDetails();
         CustomerOrder customerOrder = createOrder(details);
         customerOrder.setTotalCost(cartService.calculateCartTotalCost(cart));
         orderRepository.save(customerOrder);
         convertItems(cart, customerOrder);
-        cartService.updateCartTotal(customerId);
+        cartService.emptyCart(customer.getId());
         return customerOrder;
     }
 
@@ -63,20 +65,12 @@ public class OrderServiceImpl implements OrderService{
         return customerOrder;
     }
 
-    private void convertItems(Cart cart, CustomerOrder customerOrder){
+    private CustomerOrder convertItems(Cart cart, CustomerOrder customerOrder){
         for(CartItem cartItem : cart.getCartItems()){
-            convertCartItemToOrderItem(cartItem, customerOrder);
+            OrderItem orderItem = itemService.convertCartItemToOrderItem(cartItem.getId(), customerOrder);
+            customerOrder.getOrderItems().add(orderItem);
         }
-    }
-
-    private void convertCartItemToOrderItem(CartItem cartItem, CustomerOrder customerOrder){
-        OrderItem orderItem = new OrderItem();
-        orderItem.setCustomerOrder(customerOrder);
-        orderItem.setProduct(cartItem.getProduct());
-        orderItem.setAmount(cartItem.getAmount());
-        orderItem.setCost(cartItem.getCost());
-        itemService.saveItem(orderItem);
-        itemService.delete(cartItem.getId());
+        return customerOrder;
     }
 
     private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){

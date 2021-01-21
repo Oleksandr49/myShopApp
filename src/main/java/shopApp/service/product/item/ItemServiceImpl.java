@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shopApp.model.item.CartItem;
 import shopApp.model.item.Item;
+import shopApp.model.item.OrderItem;
+import shopApp.model.order.CustomerOrder;
 import shopApp.model.product.Product;
 import shopApp.repository.ItemRepository;
 
@@ -26,6 +28,29 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public OrderItem convertCartItemToOrderItem(Long itemId, CustomerOrder customerOrder) {
+        return itemRepository.findById(itemId)
+                .map(cartItem -> {
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setProduct(cartItem.getProduct());
+                    orderItem.setAmount(cartItem.getAmount());
+                    orderItem.setCost(cartItem.getCost());
+                    orderItem.setCustomerOrder(customerOrder);
+                    return itemRepository.save(orderItem);
+                }).orElseThrow();
+    }
+
+    @Override
+    public Item updateItemAmount(Long itemId, Integer amount) {
+        return itemRepository.findById(itemId)
+                .map(item -> {
+                    item.setAmount(amount);
+                    item.setCost(calculateItemCost(item));
+                    return itemRepository.save(item);
+                }).orElseThrow();
+    }
+
+    @Override
     public void delete(Long id) {
         if(!itemRepository.existsById(id)){
             throw new EntityNotFoundException("No Such Item");
@@ -38,14 +63,11 @@ public class ItemServiceImpl implements ItemService{
         CartItem cartItem = new CartItem();
         cartItem.setProduct(product);
         cartItem.setAmount(1);
-        cartItem.setCost(cartItem.getAmount() * product.getProductPrice());
+        cartItem.setCost(calculateItemCost(cartItem));
         return cartItem;
     }
 
-    @Override
-    public void changeItemAmount(Long itemId, Integer newAmount) {
-        Item item = getItem(itemId);
-        item.setAmount(newAmount);
-        saveItem(item);
+    private Integer calculateItemCost(Item item){
+        return item.getAmount() * item.getProduct().getProductPrice();
     }
 }

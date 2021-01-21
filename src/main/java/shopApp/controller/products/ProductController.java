@@ -9,6 +9,7 @@ import shopApp.service.product.ProductService;
 import shopApp.service.product.ProductWrapper;
 
 import javax.persistence.PersistenceException;
+import javax.validation.Valid;
 
 
 @RestController
@@ -30,12 +31,12 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public EntityModel<Product> create(@RequestBody Product product) {
+    public EntityModel<Product> create(@Valid @RequestBody Product product) {
         return productWrapper.toModel(productService.create(product));
     }
 
     @PutMapping("/products/{id}")
-    public EntityModel<Product> update(@RequestBody Product product, @PathVariable Long id){
+    public EntityModel<Product> update(@Valid @RequestBody Product product, @PathVariable Long id){
         return productWrapper.toModel(productService.update(product, id));
     }
 

@@ -14,5 +14,4 @@ public interface ProductService {
      Product read (Long id);
      Product update (Product product, Long id);
      void delete (Long id);
-     Boolean isInvalid(Product product);
 }

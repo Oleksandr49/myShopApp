@@ -35,6 +35,7 @@ public class CartServiceImpl implements CartService{
         Cart cart = readCart(customerId);
         deleteAllCartItems(cart.getCartItems());
         cart.getCartItems().clear();
+        cartRepository.save(cart);
         updateCartTotal(customerId);
     }
 
@@ -48,7 +49,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void changeItemAmount(Long customerId, Long itemId, Integer amount){
-        itemService.changeItemAmount(itemId, amount);
+        itemService.updateItemAmount(itemId, amount);
         updateCartTotal(customerId);
     }
 
@@ -76,9 +77,13 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void updateCartTotal(Long customerId){
-        Cart cart = readCart(customerId);
-        cart.setTotalCost(calculateCartTotalCost(cart));
-        cartRepository.save(cart);
+        Long cartId = readCart(customerId).getId();
+        cartRepository.findById(cartId)
+        .map(cart -> {
+            cart.setTotalCost(calculateCartTotalCost(cart));
+            return cartRepository.save(cart);
+        }).orElseThrow();
+
     }
     @Override
     public Integer calculateCartTotalCost(Cart cart){

@@ -37,7 +37,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update (Product newProduct, Long id){
-        if(isInvalid(newProduct)) throw new IllegalArgumentException("Entity is invalid");
         return productRepository.findById(id)
        .map(product -> {
                product.setProductName(newProduct.getProductName());
@@ -53,10 +52,5 @@ public class ProductServiceImpl implements ProductService {
            throw new EntityNotFoundException("No Such Product");
         }
         productRepository.deleteById(id);
-    }
-
-    @Override
-    public Boolean isInvalid(Product product){
-        return product.getProductName() == null || product.getProductPrice() == null || product.getProductPrice() <= 0 || product.getProductName().isBlank();
     }
 }
