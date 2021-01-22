@@ -7,30 +7,29 @@ import shopApp.model.user.User;
 import shopApp.model.user.UserWrapper;
 import shopApp.service.user.UserService;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     final private UserService userService;
-
     final private UserWrapper userWrapper;
 
     @GetMapping("/users/{id}")
     public EntityModel<User> readUserById(@PathVariable Long id) {
-        final User user = userService.read(id);
-        return userWrapper.toModel(user);
+        return userWrapper.toModel(userService.read(id));
     }
 
     @PostMapping("/users")
-    public void create(@RequestBody User user) {
+    public void create(@Valid @RequestBody User user) {
         userService.create(user);
     }
 
     @PutMapping("/users/{id}")
-    public EntityModel<User>  update(@RequestBody User user, @PathVariable Long id){
-        User newUser = userService.update(user, id);
-        return userWrapper.toModel(newUser);
+    public EntityModel<User>  update(@Valid @RequestBody User user, @PathVariable Long id){
+        return userWrapper.toModel(userService.update(user, id));
     }
 
     @DeleteMapping("/users/{id}")

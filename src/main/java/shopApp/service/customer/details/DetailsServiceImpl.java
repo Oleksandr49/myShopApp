@@ -23,8 +23,7 @@ public class DetailsServiceImpl implements DetailsService {
 
     @Override
     public Details updateDetails(Long customerId, Details newDetails) {
-        Long detailsId = readDetails(customerId).getId();
-        return detailsRepository.findById(detailsId)
+        return detailsRepository.findById(readDetails(customerId).getId())
                 .map(details -> {
                     details.setEmail(newDetails.getEmail());
                     details.setFirstName(newDetails.getFirstName());

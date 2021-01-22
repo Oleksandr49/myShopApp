@@ -65,12 +65,11 @@ public class OrderServiceImpl implements OrderService{
         return customerOrder;
     }
 
-    private CustomerOrder convertItems(Cart cart, CustomerOrder customerOrder){
+    private void convertItems(Cart cart, CustomerOrder customerOrder){
         for(CartItem cartItem : cart.getCartItems()){
             OrderItem orderItem = itemService.convertCartItemToOrderItem(cartItem.getId(), customerOrder);
             customerOrder.getOrderItems().add(orderItem);
         }
-        return customerOrder;
     }
 
     private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){

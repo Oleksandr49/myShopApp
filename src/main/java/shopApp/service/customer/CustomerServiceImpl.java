@@ -17,9 +17,12 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public void create(Customer customer) throws EntityExistsException {
+        /*
         if(customerExists(customer)){
             throw new EntityExistsException("Customer already exists");
         }
+
+         */
             userService.create(customer);
     }
 
@@ -27,9 +30,11 @@ public class CustomerServiceImpl implements CustomerService{
     public Customer getCustomer(Long customerId) throws EntityExistsException {
         return customerRepository.findById(customerId).orElseThrow();
     }
-
+/*
     private Boolean customerExists(Customer customer){
         return customerRepository.findUsersByUsername(customer.getUsername()) != null;
     }
+
+ */
 
 }

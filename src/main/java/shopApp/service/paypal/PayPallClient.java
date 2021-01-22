@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class PayPallClient {
-    String clientId = "AbGKaUvrNPzLJcAH-wouPArHEfnHQhlS5ZjqxEJ1d433GTgqXYZXemDaO3Mi8HFlgKItiJyIcvUCl39w";
-    String clientSecret = "EDlQPUmvJxRupCD6MyysiWuIu3ZLvmXurYGSKFCKUXyhbBIosVtM74c3nuavuHBESD0S4QQKGgKAywF-";
+public class PayPallClient implements PaymentService {
+    final String clientId = "AbGKaUvrNPzLJcAH-wouPArHEfnHQhlS5ZjqxEJ1d433GTgqXYZXemDaO3Mi8HFlgKItiJyIcvUCl39w";
+    final String clientSecret = "EDlQPUmvJxRupCD6MyysiWuIu3ZLvmXurYGSKFCKUXyhbBIosVtM74c3nuavuHBESD0S4QQKGgKAywF-";
 
     public Map<String, Object> createPayment(String sum) {
         Map<String, Object> response = new HashMap<>();
@@ -65,7 +65,7 @@ public class PayPallClient {
     }
 
     public Map<String, Object> completePayment(HttpServletRequest req){
-        Map<String, Object> response = new HashMap();
+        Map<String, Object> response = new HashMap<>();
         Payment payment = new Payment();
         payment.setId(req.getParameter("paymentId"));
 

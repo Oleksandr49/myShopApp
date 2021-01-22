@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import shopApp.model.order.CustomerOrder;
-import shopApp.service.paypal.PayPallClient;
+import shopApp.service.paypal.PaymentService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PayPallController {
 
-    private final PayPallClient payPalClient;
+    private final PaymentService payPalClient;
 
     @PostMapping("/payment/make")
     public Map<String, Object> makePayment(@RequestBody CustomerOrder customerOrder){

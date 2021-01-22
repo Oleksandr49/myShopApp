@@ -19,21 +19,16 @@ public class Details {
     @JsonIgnore
     private Long id;
     @NotBlank
-    private String firstName;
+    private String firstName = "to be provided";
     @NotBlank
-    private String secondName;
+    private String secondName = "to be provided";
     private Boolean isMale;
     @NotBlank
-    private String email;
+    private String email = "to be provided";
     @Embedded
     @Valid
-    private Address address;
+    private Address address = new Address();
     @OneToMany(mappedBy = "details")
+    @JsonIgnore
     private final List<CustomerOrder> orderHistory = new ArrayList<>();
-
-    public Details(){
-        this.firstName = "empty";
-        this.secondName = "empty";
-        this.email = "empty";
-    }
 }

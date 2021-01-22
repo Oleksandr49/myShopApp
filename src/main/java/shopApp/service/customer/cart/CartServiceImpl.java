@@ -44,7 +44,8 @@ public class CartServiceImpl implements CartService{
         Cart cart = readCart(customerId);
         Product product = productService.read(productId);
         if(isProductInCart(cart, product)) throw new EntityExistsException("Product already in cart");
-        createAndAddItemToCart(customerId, product);
+        createAndAddItemToCart(cart, product);
+        updateCartTotal(customerId);
     }
 
     @Override
@@ -66,13 +67,12 @@ public class CartServiceImpl implements CartService{
         return false;
     }
 
-    private void createAndAddItemToCart(Long customerId, Product product){
-        Cart cart = readCart(customerId);
+    private void createAndAddItemToCart(Cart cart, Product product){
         CartItem cartItem = itemService.createCartItem(product);
         cartItem.setCart(cart);
         cart.getCartItems().add(cartItem);
         itemService.saveItem(cartItem);
-        updateCartTotal(customerId);
+        cartRepository.save(cart);
     }
 
     @Override

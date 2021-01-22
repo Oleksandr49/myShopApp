@@ -5,6 +5,7 @@ import lombok.Data;
 import shopApp.model.product.Product;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +23,8 @@ public class Item {
     private Integer cost;
     @ManyToOne
     @JoinColumn(name = "product_fk")
+    @NotNull
+    @Valid
     private Product product;
 
 }
