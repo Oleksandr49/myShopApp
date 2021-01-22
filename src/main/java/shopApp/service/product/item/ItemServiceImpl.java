@@ -7,6 +7,7 @@ import shopApp.model.item.Item;
 import shopApp.model.item.OrderItem;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.product.Product;
+import shopApp.model.user.customer.Cart;
 import shopApp.repository.ItemRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -28,16 +29,15 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public OrderItem convertCartItemToOrderItem(Long itemId, CustomerOrder customerOrder) {
-        return itemRepository.findById(itemId)
-                .map(cartItem -> {
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setProduct(cartItem.getProduct());
-                    orderItem.setAmount(cartItem.getAmount());
-                    orderItem.setCost(cartItem.getCost());
-                    orderItem.setCustomerOrder(customerOrder);
-                    return itemRepository.save(orderItem);
-                }).orElseThrow();
+    public CustomerOrder moveItemsFromCartToOrder(Cart cart, CustomerOrder customerOrder) {
+        cart.getCartItems().forEach(cartItem -> {
+            OrderItem item = createOrderItemFromCartItem(cartItem);
+            item.setCustomerOrder(customerOrder);
+            itemRepository.save(item);
+            itemRepository.deleteById(cartItem.getId());
+            customerOrder.getOrderItems().add(item);
+        });
+        return customerOrder;
     }
 
     @Override
@@ -65,6 +65,14 @@ public class ItemServiceImpl implements ItemService{
         cartItem.setAmount(1);
         cartItem.setCost(calculateItemCost(cartItem));
         return cartItem;
+    }
+
+    private OrderItem createOrderItemFromCartItem(CartItem cartItem){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProduct(cartItem.getProduct());
+        orderItem.setAmount(cartItem.getAmount());
+        orderItem.setCost(cartItem.getCost());
+        return orderItem;
     }
 
     private Integer calculateItemCost(Item item){

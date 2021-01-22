@@ -2,9 +2,9 @@ package shopApp.service.product.item;
 
 import shopApp.model.item.CartItem;
 import shopApp.model.item.Item;
-import shopApp.model.item.OrderItem;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.product.Product;
+import shopApp.model.user.customer.Cart;
 
 public interface ItemService {
 
@@ -12,7 +12,7 @@ public interface ItemService {
 
     Item saveItem(Item item);
 
-    OrderItem convertCartItemToOrderItem(Long itemId, CustomerOrder customerOrder);
+    CustomerOrder moveItemsFromCartToOrder(Cart cart, CustomerOrder customerOrder);
 
     Item updateItemAmount(Long itemId, Integer amount);
 

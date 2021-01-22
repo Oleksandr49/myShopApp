@@ -5,6 +5,9 @@ import shopApp.model.user.customer.Cart;
 public interface CartService {
 
     Cart readCart(Long customerId);
+
+    void saveCart(Cart cart);
+
     void emptyCart(Long customerId);
     void addProductToCart(Long customerId, Long productId);
     void changeItemAmount(Long customerId, Long itemId, Integer amount);

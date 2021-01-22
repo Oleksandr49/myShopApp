@@ -2,8 +2,6 @@ package shopApp.service.customer.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import shopApp.model.item.CartItem;
-import shopApp.model.item.OrderItem;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.order.OrderState;
 import shopApp.model.user.customer.Cart;
@@ -43,17 +41,20 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public CustomerOrder orderCart(Long customerId) {
         Customer customer = customerService.getCustomer(customerId);
-        return assembleOrderForCartItems(customer);
+        if(isCartEmpty(customer.getCart())) throw new IllegalArgumentException("Cart is empty!");
+        return assembleOrderForCart(customer);
     }
 
-    private CustomerOrder assembleOrderForCartItems(Customer customer) {
+    private CustomerOrder assembleOrderForCart(Customer customer) {
         Cart cart = customer.getCart();
         Details details = customer.getDetails();
         CustomerOrder customerOrder = createOrder(details);
         customerOrder.setTotalCost(cartService.calculateCartTotalCost(cart));
         orderRepository.save(customerOrder);
-        convertItems(cart, customerOrder);
-        cartService.emptyCart(customer.getId());
+        customerOrder =  itemService.moveItemsFromCartToOrder(cart, customerOrder);
+        cart.getCartItems().clear();
+        cartService.saveCart(cart);
+        cartService.updateCartTotal(customer.getId());
         return customerOrder;
     }
 
@@ -65,13 +66,6 @@ public class OrderServiceImpl implements OrderService{
         return customerOrder;
     }
 
-    private void convertItems(Cart cart, CustomerOrder customerOrder){
-        for(CartItem cartItem : cart.getCartItems()){
-            OrderItem orderItem = itemService.convertCartItemToOrderItem(cartItem.getId(), customerOrder);
-            customerOrder.getOrderItems().add(orderItem);
-        }
-    }
-
     private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){
         for(CustomerOrder order : orderHistory){
             if(order.getOrderId().equals(orderId)){
@@ -81,5 +75,7 @@ public class OrderServiceImpl implements OrderService{
         throw new EntityNotFoundException("No such Order");
     }
 
-
+    private Boolean isCartEmpty(Cart cart){
+        return cart.getCartItems().isEmpty();
+    }
 }
