@@ -10,7 +10,7 @@ import shopApp.model.product.Product;
 import shopApp.model.user.customer.Cart;
 import shopApp.repository.ItemRepository;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +37,12 @@ public class ItemServiceImpl implements ItemService{
             itemRepository.deleteById(cartItem.getId());
             customerOrder.getOrderItems().add(item);
         });
+        cart.getCartItems().clear();
         return customerOrder;
     }
 
     @Override
-    public Item updateItemAmount(Long itemId, Integer amount) {
+    public Item updateItemAmountAndCost(Long itemId, Integer amount) {
         return itemRepository.findById(itemId)
                 .map(item -> {
                     item.setAmount(amount);
@@ -53,7 +54,7 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public void delete(Long id) {
         if(!itemRepository.existsById(id)){
-            throw new EntityNotFoundException("No Such Item");
+            throw new NoSuchElementException("No Item with this ID");
         }
         itemRepository.deleteById(id);
     }

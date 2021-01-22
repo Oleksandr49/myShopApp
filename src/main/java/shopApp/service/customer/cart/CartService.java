@@ -10,7 +10,7 @@ public interface CartService {
 
     void emptyCart(Long customerId);
     void addProductToCart(Long customerId, Long productId);
-    void changeItemAmount(Long customerId, Long itemId, Integer amount);
+    void changeItemAmount(Long customerId, Long itemId, Integer amount);//move to itemService without customerId
     void removeItemFromCart(Long customerId, Long productId);
     void updateCartTotal(Long customerId);
 

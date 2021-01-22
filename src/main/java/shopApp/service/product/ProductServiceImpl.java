@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import shopApp.model.product.Product;
 import shopApp.repository.ProductRepository;
 
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +15,8 @@ public class ProductServiceImpl implements ProductService {
     final private ProductRepository productRepository;
 
     @Override
-    public List<Product> readAllProducts() throws PersistenceException {
-        List<Product> productsList = productRepository.findAll();
-        if(productsList.isEmpty()){
-            throw new EntityNotFoundException("No Products in database");
-        }
-        return productsList;
+    public List<Product> readAllProducts(){
+        return productRepository.findAll();
     }
 
     @Override
@@ -49,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(Long id) {
         if(!productRepository.existsById(id)){
-           throw new EntityNotFoundException("No Such Product");
+           throw new NoSuchElementException("No Product with this ID");
         }
         productRepository.deleteById(id);
     }

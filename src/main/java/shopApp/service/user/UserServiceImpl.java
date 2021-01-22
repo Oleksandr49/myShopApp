@@ -7,7 +7,7 @@ import shopApp.model.user.User;
 import shopApp.model.user.customer.Customer;
 import shopApp.repository.UserRepository;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -40,22 +40,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         if(!userRepository.existsById(id)){
-            throw new EntityNotFoundException("No Such User");
+            throw new NoSuchElementException("No Such User");
         }
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public User update(User newUser, Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(newUser.getUsername());
-                    user.setPassword(newUser.getPassword());
-                    return userRepository.save(user);
-                })
-                .orElseGet(()->{
-                    newUser.setId(id);
-                    return userRepository.save(newUser);
-                });
     }
 }

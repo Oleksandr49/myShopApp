@@ -1,7 +1,6 @@
 package shopApp.controller.authentication;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,13 +24,12 @@ public class AuthenticationController {
     final private JwtService jwtService;
 
     @PostMapping("/authentication")
-    public AuthenticationResponse createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest)
-            throws AuthenticationException{
+    public AuthenticationResponse createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         }
         catch (BadCredentialsException e){
-            throw new AuthenticationException("Incorrect username or password");
+            throw new BadCredentialsException("Incorrect username or password");
         }
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtService.generateToken(userDetails);

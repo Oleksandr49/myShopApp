@@ -7,6 +7,6 @@ import javax.persistence.EntityExistsException;
 public interface CustomerService {
 
     void create (Customer customer) throws EntityExistsException;
-    Customer getCustomer(Long customerId) throws EntityExistsException;
+    Customer getCustomer(Long customerId);
 
 }

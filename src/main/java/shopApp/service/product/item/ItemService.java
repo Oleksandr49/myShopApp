@@ -12,10 +12,11 @@ public interface ItemService {
 
     Item saveItem(Item item);
 
-    CustomerOrder moveItemsFromCartToOrder(Cart cart, CustomerOrder customerOrder);
+    CustomerOrder moveItemsFromCartToOrder(Cart cart, CustomerOrder customerOrder); //change to itemsId
 
-    Item updateItemAmount(Long itemId, Integer amount);
+    Item updateItemAmountAndCost(Long itemId, Integer amount);
 
-    void delete (Long id);
+    void delete (Long itemId);
+
     CartItem createCartItem(Product product);
 }

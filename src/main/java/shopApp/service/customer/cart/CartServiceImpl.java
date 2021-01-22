@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void changeItemAmount(Long customerId, Long itemId, Integer amount){
-        itemService.updateItemAmount(itemId, amount);
+        itemService.updateItemAmountAndCost(itemId, amount);
         updateCartTotal(customerId);
     }
 

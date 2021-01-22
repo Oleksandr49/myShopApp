@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shopApp.model.order.CustomerOrder;
 import shopApp.model.order.OrderState;
-import shopApp.model.user.customer.Cart;
 import shopApp.model.user.customer.Customer;
-import shopApp.model.user.customer.Details;
 import shopApp.repository.OrderRepository;
 import shopApp.service.customer.CustomerService;
 import shopApp.service.customer.cart.CartService;
@@ -15,6 +13,7 @@ import shopApp.service.product.item.ItemService;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -30,7 +29,10 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public CustomerOrder readOrder(Long customerId, Long orderId) {
-        return findOrder(getOrderHistory(customerId), orderId);
+        Customer customer = customerService.getCustomer(customerId);
+        CustomerOrder order = orderRepository.findById(orderId).orElseThrow();
+        if(customer.getDetails().getId().equals(order.getDetails().getId())) return order;
+        else throw new NoSuchElementException("No order with this ID for current customer");
     }
 
     @Override
@@ -41,41 +43,24 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public CustomerOrder orderCart(Long customerId) {
         Customer customer = customerService.getCustomer(customerId);
-        if(isCartEmpty(customer.getCart())) throw new IllegalArgumentException("Cart is empty!");
+        if(customer.getCart().getCartItems().isEmpty()) throw new EntityNotFoundException("No Products in cart");
         return assembleOrderForCart(customer);
     }
 
     private CustomerOrder assembleOrderForCart(Customer customer) {
-        Cart cart = customer.getCart();
-        Details details = customer.getDetails();
-        CustomerOrder customerOrder = createOrder(details);
-        customerOrder.setTotalCost(cartService.calculateCartTotalCost(cart));
-        orderRepository.save(customerOrder);
-        customerOrder =  itemService.moveItemsFromCartToOrder(cart, customerOrder);
-        cart.getCartItems().clear();
-        cartService.saveCart(cart);
+        CustomerOrder customerOrder = createOrder(customer);
+        customerOrder = itemService.moveItemsFromCartToOrder(customer.getCart(), customerOrder);
         cartService.updateCartTotal(customer.getId());
         return customerOrder;
     }
 
-    private CustomerOrder createOrder(Details details){
+    private CustomerOrder createOrder(Customer customer){
         CustomerOrder customerOrder = new CustomerOrder();
         customerOrder.setCreated(LocalDateTime.now());
         customerOrder.setOrderState(OrderState.STATE);
-        customerOrder.setDetails(details);
+        customerOrder.setDetails(customer.getDetails());
+        customerOrder.setTotalCost(cartService.calculateCartTotalCost(customer.getCart()));
+        orderRepository.save(customerOrder);
         return customerOrder;
-    }
-
-    private CustomerOrder findOrder(List<CustomerOrder> orderHistory, Long orderId){
-        for(CustomerOrder order : orderHistory){
-            if(order.getOrderId().equals(orderId)){
-                return order;
-            }
-        }
-        throw new EntityNotFoundException("No such Order");
-    }
-
-    private Boolean isCartEmpty(Cart cart){
-        return cart.getCartItems().isEmpty();
     }
 }

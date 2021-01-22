@@ -1,6 +1,7 @@
 package shopApp.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,20 +31,17 @@ public class ControllersExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({PersistenceException.class})
-    public String handlePersistenceExceptions(PersistenceException ex) {
+    @ExceptionHandler({PersistenceException.class, ConstraintViolationException.class, NoSuchElementException.class})
+    public String handlePersistenceExceptions(RuntimeException ex) {
         return ex.getMessage();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
-    public String handleNoOrWrongElementExceptions(RuntimeException ex) {
+    @ExceptionHandler({AccessDeniedException.class, BadCredentialsException.class})
+    public String handleAccessDeniedExceptions(RuntimeException ex) {
         return ex.getMessage();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({AccessDeniedException.class})
-    public String handleAccessDeniedExceptions(AccessDeniedException ex) {
-        return ex.getMessage();
-    }
 }
+
+
