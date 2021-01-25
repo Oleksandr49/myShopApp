@@ -12,10 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
 public class Customer extends User {
 
     @OneToOne(cascade = CascadeType.ALL)

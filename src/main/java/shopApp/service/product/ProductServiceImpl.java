@@ -32,13 +32,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product update (Product newProduct, Long id){
-        return productRepository.findById(id)
-       .map(product -> {
-               product.setProductName(newProduct.getProductName());
-               product.setProductPrice(newProduct.getProductPrice());
-               return productRepository.save(product);
-       })
-       .orElseThrow();
+        Product product = read(id);
+        product.setProductName(newProduct.getProductName());
+        product.setProductPrice(newProduct.getProductPrice());
+        return productRepository.save(product);
     }
 
     @Override

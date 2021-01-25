@@ -18,8 +18,8 @@ public class Product {
     private Long id;
     @NotBlank
     private String productName;
-    @NotNull
     @Min(0)
+    @NotNull
     private Integer productPrice;
     @OneToMany(mappedBy = "product")
     @JsonIgnore

@@ -13,8 +13,6 @@ import shopApp.repository.ProductRepository;
 import shopApp.service.product.ProductService;
 import shopApp.service.product.ProductServiceImpl;
 
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,11 +33,7 @@ public class ProductServiceTests {
 
     @Test
     public void readExistingProductTest(){
-        Product product = new Product();
-        product.setId(1L);
-        product.setProductPrice(100000);
-        product.setProductName("Phone");
-        assertEquals(product, productService.read(product.getId()));
+        assertNotNull(productService.read(1L));
     }
 
     @Test
@@ -56,7 +50,7 @@ public class ProductServiceTests {
     @Test
     public void readAllProductsWhenNoProductsInDatabaseThrowsEntityNotFoundException(){
         ProductServiceImpl productService = new ProductServiceImpl(Mockito.mock(ProductRepository.class));
-        assertThrows(EntityNotFoundException.class, productService::readAllProducts);
+        assertTrue(productService.readAllProducts().isEmpty());
     }
 
     @Test
@@ -68,35 +62,22 @@ public class ProductServiceTests {
     }
 
     @Test
-    public void creationOfInvalidProductTest(){
-        Product product = new Product();
-        assertThrows(ConstraintViolationException.class, ()->productService.create(product));
-    }
-
-    @Test
     public void updatingOfExistingProductTest(){
         Product product = new Product();
         product.setId(5L);
         product.setProductPrice(88888);
         product.setProductName("Monitor");
-        assertEquals(product, productService.update(product, product.getId()));
+        assertEquals(product.getProductPrice(), productService.update(product, product.getId()).getProductPrice());
+        assertEquals(product.getProductName(), productService.update(product, product.getId()).getProductName());
     }
 
     @Test
     public void updatingNonExistingProductTest() {
         Product product = new Product();
-        product.setId(-1L);
+        product.setId(15L);
         product.setProductPrice(88888);
         product.setProductName("Monitor");
         assertThrows(NoSuchElementException.class, ()->productService.update(product, product.getId()));
-    }
-
-    @Test
-    public void updatingOfExistingProductWithInvalidEntityTest() {
-        Product product = new Product();
-        product.setId(5L);
-        product.setProductName("Monitor");
-        assertThrows(IllegalArgumentException.class, ()->productService.update(product, product.getId()));
     }
 
     @Test
@@ -107,7 +88,7 @@ public class ProductServiceTests {
 
     @Test
     public void deletionOfNonExistingProduct() {
-        assertThrows(EntityNotFoundException.class, ()->productService.delete(-1L));
+        assertThrows(NoSuchElementException.class, ()->productService.delete(-1L));
     }
 }
 

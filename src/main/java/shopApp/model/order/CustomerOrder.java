@@ -1,7 +1,9 @@
 package shopApp.model.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import shopApp.model.item.OrderItem;
 import shopApp.model.user.customer.Details;
 
@@ -11,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
