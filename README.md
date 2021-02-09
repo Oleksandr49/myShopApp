@@ -13,5 +13,4 @@ JSON,
 HATEOAS,
 MySQL,
 Tomcat server,
-Lombok,
-JUnit
+Lombok
