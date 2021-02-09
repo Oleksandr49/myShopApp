@@ -5,12 +5,13 @@ Application can run locally using Tomcat and MySQL or be deployed to Google Clou
 
 # Technology stack
 
-Java 8
-Spring Boot
-Hibernate, JPA
-JSON
-HATEOAS
-MySQL
-Tomcat server
-Lombok
+Java 8,
+Spring Boot,
+Hibernate, 
+JPA,
+JSON,
+HATEOAS,
+MySQL,
+Tomcat server,
+Lombok,
 JUnit
