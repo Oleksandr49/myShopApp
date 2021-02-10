@@ -31,7 +31,7 @@ public class Details {
     @Embedded
     @Valid
     private Address address = new Address();
-    @OneToMany(mappedBy = "details")
+    @OneToMany(mappedBy = "details", cascade = CascadeType.ALL)
     @JsonIgnore
     private final List<CustomerOrder> orderHistory = new ArrayList<>();
 }

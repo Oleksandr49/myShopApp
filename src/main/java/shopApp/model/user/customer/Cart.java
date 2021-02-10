@@ -16,6 +16,6 @@ public class Cart {
     @JsonIgnore
     private Long id;
     private Integer totalCost = 0;
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private final List<CartItem> cartItems = new ArrayList<>();
 }

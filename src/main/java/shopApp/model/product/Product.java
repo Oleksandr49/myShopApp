@@ -21,7 +21,7 @@ public class Product {
     @Min(0)
     @NotNull
     private Integer productPrice;
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Item> item;
 }

@@ -29,6 +29,6 @@ public class CustomerOrder {
     @JsonIgnore
     private Details details;
 
-    @OneToMany(mappedBy = "customerOrder")
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
     private final List<OrderItem> orderItems = new ArrayList<>();
 }

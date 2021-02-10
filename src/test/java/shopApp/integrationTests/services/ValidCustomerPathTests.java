@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import shopApp.model.user.customer.Details;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -177,7 +179,58 @@ public class ValidCustomerPathTests {
     }
 
     @Test
+    @Order(7)
+    void getCartWhenEmpty() throws Exception {
+        mvc.perform(
+                get("/customers/carts").contentType(MediaType.APPLICATION_JSON).header(authHeaderName, authHeaderValue))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("$.totalCost", Matchers.equalTo(0)))
+                .andExpect(jsonPath("$.cartItems", Matchers.hasSize(0)))
+                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/carts")))
+                .andExpect(jsonPath("$._links.OrderCart.href", is("http://localhost/customers/orders")));
+    }
+
+    @Test
     @Order(8)
+    void addProductWithId1ToEmptyCartReturnOK() throws Exception {
+        mvc.perform(
+                put("/customers/carts/1").contentType(MediaType.APPLICATION_JSON).header(authHeaderName,authHeaderValue))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Order(9)
+    void getCartWhenContainsProductWithId1() throws Exception {
+        mvc.perform(
+                get("/customers/carts").contentType(MediaType.APPLICATION_JSON).header(authHeaderName, authHeaderValue))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("$.totalCost", Matchers.equalTo(10000)))
+                .andExpect(jsonPath("$.cartItems", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/carts")))
+                .andExpect(jsonPath("$._links.OrderCart.href", is("http://localhost/customers/orders")));
+    }
+
+    @Test
+    @Order(10)
+    void orderCartToReceiveOrderForProceeding() throws Exception {
+        mvc.perform(
+                post("/customers/orders").contentType(MediaType.APPLICATION_JSON).header(authHeaderName, authHeaderValue))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("$.totalCost", Matchers.equalTo(10000)))
+                .andExpect(jsonPath("$.orderItems", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$._links.self.href", Matchers.containsString("http://localhost/customers/orders")))
+                .andExpect(jsonPath("$._links.OrderHistory.href", is("http://localhost/customers/orders")))
+                .andExpect(jsonPath("$._links.Payment.href", is("http://localhost/payment/make")));
+    }
+
+    @Test
+    @Order(15)
     public void deleteTestUserAfterTest() throws Exception {
         mvc.perform(
                 delete("/users").contentType(MediaType.APPLICATION_JSON).header(authHeaderName, authHeaderValue))
