@@ -28,7 +28,6 @@ public class DetailsServiceImpl implements DetailsService {
                     details.setEmail(newDetails.getEmail());
                     details.setFirstName(newDetails.getFirstName());
                     details.setSecondName(newDetails.getSecondName());
-                    details.setIsMale(newDetails.getIsMale());
                     details.setAddress(newDetails.getAddress());
                     return detailsRepository.save(details);
                 }).orElseThrow();

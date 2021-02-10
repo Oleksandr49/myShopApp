@@ -23,12 +23,11 @@ public class Details {
     @JsonIgnore
     private Long id;
     @NotBlank
-    private String firstName = "to be provided";
+    private String firstName = "empty";
     @NotBlank
-    private String secondName = "to be provided";
-    private Boolean isMale;
+    private String secondName = "empty";
     @NotBlank
-    private String email = "to be provided";
+    private String email = "empty";
     @Embedded
     @Valid
     private Address address = new Address();

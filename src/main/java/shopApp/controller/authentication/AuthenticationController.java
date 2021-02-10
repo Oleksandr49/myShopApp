@@ -15,6 +15,7 @@ import shopApp.service.user.MyUserDetailsService;
 
 import javax.validation.Valid;
 
+//Description
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {

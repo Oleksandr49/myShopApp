@@ -9,13 +9,13 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class Address {
     @NotBlank
-    private String country = "to be provided";
+    private String country = "empty";
     @NotBlank
-    private String state = "to be provided";
+    private String state = "empty";
     @NotBlank
-    private String city = "to be provided";
+    private String city = "empty";
     @NotBlank
-    private String street = "to be provided";
+    private String street = "empty";
     @NotBlank
-    private String postalCode = "to be provided";
+    private String postalCode = "empty";
 }
