@@ -31,8 +31,8 @@ public class CartController {
     }
 
     @PutMapping("/{productId}")
-    public void addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
-       cartService.addProductToCart(jwtService.getCustomerIdFromAuthHeader(header), productId);
+    public Long addToCart(@RequestHeader(name = headerName)String header, @PathVariable Long productId) {
+       return cartService.addProductToCart(jwtService.getCustomerIdFromAuthHeader(header), productId);
     }
 
     @PutMapping("/{itemId}/{amount}")

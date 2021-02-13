@@ -45,12 +45,13 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public void addProductToCart(Long customerId, Long productId) {
+    public Long addProductToCart(Long customerId, Long productId) {
         Cart cart = readCart(customerId);
         Product product = productService.read(productId);
         if(isProductInCart(cart, product)) throw new EntityExistsException("Product already in cart");
-        createAndAddItemToCart(cart, product);
+        Long cartItemID = createAndAddItemToCart(cart, product);
         updateCartTotal(customerId);
+        return cartItemID;
     }
 
     @Override
@@ -61,6 +62,16 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void removeItemFromCart(Long customerId, Long itemId) {
+        //start
+        Cart cart = customerService.getCustomer(customerId).getCart();
+        List<CartItem> cartItems = cart.getCartItems();
+        for(int i = 0; i < cartItems.size(); i++){
+            if(cartItems.get(i).getId().equals(itemId)){
+                cartItems.remove(i);
+            }
+        }
+        cartRepository.save(cart);
+        //end
         itemService.delete(itemId);
         updateCartTotal(customerId);
     }
@@ -72,12 +83,14 @@ public class CartServiceImpl implements CartService{
         return false;
     }
 
-    private void createAndAddItemToCart(Cart cart, Product product){
+    private Long createAndAddItemToCart(Cart cart, Product product){
         CartItem cartItem = itemService.createCartItem(product);
         cartItem.setCart(cart);
         cart.getCartItems().add(cartItem);
         itemService.saveItem(cartItem);
+        Long cartItemID = cartItem.getId();
         cartRepository.save(cart);
+        return cartItemID;
     }
 
     @Override
