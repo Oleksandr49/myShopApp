@@ -38,6 +38,7 @@ public class CartControllerTests {
     String testJWT;
     String authHeaderKey = "Authorization";
     ObjectWriter objectWriter;
+    MvcResult cartItemID;
 
     @BeforeAll
     public void RegisterValidTestCustomerInDatabaseAndAuthenticateForGettingTestJWT() throws Exception {
@@ -93,9 +94,10 @@ public class CartControllerTests {
 
     @Test
     void givenValidAuthenticatedUserPUTProductToCartReturnsStatusOk() throws Exception {
-        mvc.perform(
-                put("/customers/carts/1").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
-                .andExpect(status().isOk());
+        cartItemID = mvc.perform(
+                put("/customers/carts/2").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
@@ -107,11 +109,14 @@ public class CartControllerTests {
 
     @Test
     void givenCartWithItemsRemoveItemReturnsOkStatus() throws Exception {
+        /*
         MvcResult cartItemID = mvc.perform(
                 put("/customers/carts/1").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+
+         */
 
         mvc.perform(
                 delete("/customers/carts/" + cartItemID.getResponse().getContentAsString()).contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
@@ -142,19 +147,20 @@ public class CartControllerTests {
     }
     @Test
 
-    void givenCartWithItemsClearCartReturnsStstusOk() throws Exception {
-        MvcResult cartItemID = mvc.perform(
+    void givenCartWithItemsClearCartReturnsStatusOk() throws Exception {
+        /*MvcResult cartItemID = mvc.perform(
                 put("/customers/carts/1").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+
+         */
 
         mvc.perform(
                 delete("/customers/carts").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
-
 
     @AfterAll
     public void deleteTestUserFromDatabaseAfterTest() throws Exception {

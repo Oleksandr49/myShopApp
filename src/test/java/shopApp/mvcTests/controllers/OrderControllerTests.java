@@ -21,11 +21,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import shopApp.model.jwt.AuthenticationRequest;
 import shopApp.model.user.customer.Customer;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,12 +73,58 @@ public class OrderControllerTests {
     }
 
     @Test
-    void givenEmptyCartorderCartReturnsBadRequestStatus() throws Exception {
+    void givenEmptyCartOrderCartReturnsBadRequestStatus() throws Exception {
         mvc.perform(
                 post("/customers/orders").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey, testJWT))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void givenNotEmptyCartOrderCartReturnsStatusOkAndOrderJSON() throws Exception {
+        addItemsToCart();
+        mvc.perform(
+                post("/customers/orders").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey, testJWT))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+                .andExpect(jsonPath("$.totalCost", Matchers.equalTo(10000)))
+                .andExpect(jsonPath("$.orderItems", Matchers.notNullValue()))
+                .andExpect(jsonPath("$._links.self.href", Matchers.containsString("http://localhost/customers/orders/")))
+                .andExpect(jsonPath("$._links.OrderHistory.href", is("http://localhost/customers/orders")))
+                .andExpect(jsonPath("$._links.Payment.href", is("http://localhost/payment/make")));
+    }
+
+    private void addItemsToCart() throws Exception {
+        mvc.perform(
+                put("/customers/carts/1").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey,testJWT))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenEmptyOrderHistoryGETHistoryReturnsStatusOkAndEmptyList() throws Exception {
+        mvc.perform(
+                get("/customers/orders").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey, testJWT))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenNonExistingOrderReadOrderReturnsBadRequest() throws Exception {
+        mvc.perform(
+                get("/customers/orders/0").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey, testJWT))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenExistingForDifferentCustomerOrderReadOrderReturnsBadRequest() throws Exception {
+        mvc.perform(
+                get("/customers/orders/13").contentType(MediaType.APPLICATION_JSON).header(authHeaderKey, testJWT))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 
     @AfterAll
     public void deleteTestUserFromDatabaseAfterTestWithTestJWT() throws Exception {
