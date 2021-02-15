@@ -31,6 +31,7 @@ public class ProductControllerTests {
     public void givenGetAllProductsGETRequestReturnsStatusOkAndNotNullListOfProducts() throws Exception {
         mvc.perform(
                 get("/products").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.productList", Matchers.notNullValue()))
                 .andExpect(content().contentTypeCompatibleWith("application/hal+json"))
