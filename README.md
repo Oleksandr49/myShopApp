@@ -13,6 +13,13 @@ $ git clone https://github.com/Oleksandr49/myShopApp
 Change application.properties according to your local database.
 Run this application through MyShopApplication.class as Java application.
 
+# Documentation:
+To download api-docs.yaml go to http://localhost:8080//v3/api-docs.yaml when application is running
+
+# Resources:
+
+
+
 
 # Technology stack
 
