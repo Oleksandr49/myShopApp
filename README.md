@@ -14,10 +14,14 @@ Change application.properties according to your local database.
 Run this application through MyShopApplication.class as Java application.
 
 # Documentation:
-To download api-docs.yaml go to http://localhost:8080//v3/api-docs.yaml when application is running
+To download api-docs.yaml go to http://localhost:8080/v3/api-docs.yaml when application is running
 
 # Resources:
 
+Base URL for each request is https://localhost:8080/, so combine it with one of the following parts:
+
+| URL | HTTP Method | Description |
+-----------------------------------
 
 
 
