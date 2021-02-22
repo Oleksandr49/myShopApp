@@ -6,8 +6,7 @@ Application can run locally using Tomcat and MySQL or be deployed to Google Clou
 # How to run?
 
 First create a new user and schema in you local database.
-Clone this repository.
-
+Clone this repository:
 
 $ git clone https://github.com/Oleksandr49/myShopApp
 
