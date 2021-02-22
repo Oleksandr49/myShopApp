@@ -15,7 +15,13 @@ import shopApp.service.user.MyUserDetailsService;
 
 import javax.validation.Valid;
 
-//Description
+/**
+ * Uses MyUserDetailsService, AuthenticationManager and JwtService instances
+ * for user authentication with JWT.
+ * @see MyUserDetailsService
+ * @see AuthenticationManager
+ * @see JwtService
+ */
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -24,6 +30,14 @@ public class AuthenticationController {
     final private AuthenticationManager authenticationManager;
     final private JwtService jwtService;
 
+    /**
+     * Authenticates user by username/password pair.
+     * In case of correct request generates JWT for user and responds with AuthenticationResponse.
+     * When pair is incorrect throw exception and return "BadRequest" status.
+     * @param authenticationRequest {@link AuthenticationRequest} containing valid username and password.
+     * @return {@link AuthenticationResponse} with token value in "jwt" field.
+     * @throws BadCredentialsException in case of invalid or incorrect username/password pair.
+     */
     @PostMapping("/authentication")
     public AuthenticationResponse createAuthenticationToken(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         try {

@@ -16,6 +16,7 @@ import javax.validation.Valid;
  * <p>Requests should have application/json media type, response type will be application/hal+json</p>
  * @see ProductService
  * @see ProductWrapper
+ * @see Product
  */
 
 @RestController
@@ -57,7 +58,7 @@ public class ProductController {
      */
     @GetMapping("/products")
     public CollectionModel<EntityModel<Product>> readAll() {
-        return productWrapper.toEntityCollection(productService.readAllProducts());
+        return productWrapper.toCollectionModel(productService.readAllProducts());
     }
 
     /**
@@ -65,20 +66,7 @@ public class ProductController {
      * Does not require previous authentication.
      * @param productId, provided as PathVariable.
      * @return {@link EntityModel} object with included chosen Product entity and corresponding links.
-     * <p>Example of response JSON template:</p>
-     * <pre>{@code
-     * {
-     *      "id": LongValue,
-     *      "productName": "StringValue",
-     *      "productPrice": IntegerValue,
-     *      "_links": {
-     *          "self: {
-     *              "href": "StringValue"
-     *          }
-     *      }
-     * }
-     * }</pre>
-     * @see Product
+     * <p>For example of response JSON template see {@link Product}</p>
      */
     @GetMapping("/products/{productId}")
     public EntityModel<Product> readProductById(@PathVariable Long productId) {
@@ -89,15 +77,14 @@ public class ProductController {
      * Creates a Product entity in database. Responds with created Product entity.
      * Usage requires previous authentication with ADMIN role.
      * @param product valid Product entity JSON.
-     *                Example:<pre>{@code
+     *                Example for input:<pre>{@code
      * {
      *      "productName": "NotBlankStringValue",
      *      "productPrice": IntegerValueGreaterThanZero
      * }
      * }</pre>
      * @return <p>{@link EntityModel} object with included created Product entity and corresponding links.</p>
-     * Return JSON template same as in "readProductById()".
-     * @see Product
+     * <p>For example of response JSON template see {@link Product}</p>
      */
     @PostMapping("/products")
     public EntityModel<Product> create(@Valid @RequestBody Product product) {
@@ -108,11 +95,10 @@ public class ProductController {
      * <p>Updates a Product entity in database by replacing all existing field for indicated Product with new values.</p>
      * Responds with updated Product entity.
      * Usage requires previous authentication with ADMIN role.
-     * @param product valid Product entity, same as Example from "create()" description.
+     * @param product valid Product entity, same as example from {@link #create(Product)} description.
      * @param id of Product entity to be updated
      * @return {@link EntityModel} serialized object with included updated Product entity and corresponding links.
-     * REturn JSOM template same as in "create()"
-     * @see Product
+     * <p>For example of response JSON template see {@link Product}</p>
      */
     @PutMapping("/products/{id}")
     public EntityModel<Product> update(@Valid @RequestBody Product product, @PathVariable Long id){

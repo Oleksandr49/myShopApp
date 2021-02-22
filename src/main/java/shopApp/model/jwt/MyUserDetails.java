@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Used by Spring security as implementation of UserDetails
+ * for user authentication. Works with User entity.
+ * @see UserDetails
+ * @see User
+ */
 public class MyUserDetails implements UserDetails {
     @Getter
     private final String username;
@@ -20,6 +26,9 @@ public class MyUserDetails implements UserDetails {
     @Getter
     private final List<GrantedAuthority> authorities;
 
+    /**
+     * @param user User entity corresponding to required UserDetails
+     */
     public MyUserDetails(User user){
         this.username = user.getUsername();
         this.password = user.getPassword();
@@ -29,21 +38,37 @@ public class MyUserDetails implements UserDetails {
                         .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @return true always
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     *
+     * @return true always
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     *
+     * @return true always
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     *
+     * @return true when user is active.
+     */
     @Override
     public boolean isEnabled() {
         return isActive;

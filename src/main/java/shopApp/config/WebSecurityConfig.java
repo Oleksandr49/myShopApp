@@ -18,7 +18,7 @@ import shopApp.service.user.MyUserDetailsService;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String[] urls = {"/authentication", "/customers", "/", "/css/**", "/js/**"};
+    private final String[] urls = {"/authentication", "/customers", "/", "/css/**", "/js/**", "/v2/**"};
 
     @Autowired
     JwtFilter jwtFilter;
@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/products/**").permitAll()
+                .antMatchers("/products/**").hasRole("ADMIN")
                 .antMatchers(urls).permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
